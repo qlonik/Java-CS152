@@ -1,0 +1,17 @@
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# tmp text editor files
+*~
+
+# pdf files with problems #
+*.pdf
+# Resources files for labs
+*.zip
+
+# projects
+build/
+private/
+dist/
