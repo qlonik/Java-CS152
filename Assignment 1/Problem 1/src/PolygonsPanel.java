@@ -14,13 +14,17 @@ import javax.swing.JPanel;
  */
 public class PolygonsPanel extends JPanel {
 
+    //file path
+    private final String pathname = "polygons.txt";
     //polyline
     private int[] xPoints, yPoints;
     private int nPoints;
     //polygon
     private ArrayList<Polygon> polygons;
     private boolean completeness;
+    //output
     private File file;
+    private PrintWriter output;
 
     public PolygonsPanel() {
         setPreferredSize(new Dimension(1000, 1000));
@@ -29,10 +33,18 @@ public class PolygonsPanel extends JPanel {
         this.addKeyListener(listener);
         this.addMouseListener(listener);
 
-        file = new File("polygons.txt");
+        file = new File(pathname);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException ex) {
+                System.err.println(ex);
+            }
+        }
+
         try {
-            file.createNewFile();
-        } catch (IOException ex) {
+            output = new PrintWriter("polygons.txt");
+        } catch (FileNotFoundException ex) {
             System.err.println(ex);
         }
 
@@ -60,22 +72,11 @@ public class PolygonsPanel extends JPanel {
     }
 
     private void saveToFile(Polygon polygon) {
-        PrintWriter output = null;
-
-        try {
-            //try open file
-            output = new PrintWriter(file);
-
-            //write all points of polygon into file and add "-1 -1" after polygon
-            for (int i = 0; i < polygon.npoints; i++) {
-                output.println(polygon.xpoints[i] + "\t" + polygon.ypoints[i]);
-            }
-            output.println("-1\t-1");
-        } catch (FileNotFoundException ex) {
-            System.err.println(ex);
+        //write all points of polygon into file and add "-1 -1" after polygon
+        for (int i = 0; i < polygon.npoints; i++) {
+            output.println(polygon.xpoints[i] + "\t" + polygon.ypoints[i]);
         }
-
-        output.close();
+        output.println("-1\t-1");
     }
 
     private void completePolygon() {
@@ -98,6 +99,8 @@ public class PolygonsPanel extends JPanel {
             saveToFile(tmpPolygon);
         }
 
+        output.close();
+
         System.exit(code);
     }
 
@@ -112,15 +115,23 @@ public class PolygonsPanel extends JPanel {
     }
 
     private void mouseClick(MouseEvent evt) {
-        if (completeness) {
-            completeness = false;
+        if (evt.getButton() == MouseEvent.BUTTON1) {
+            if (completeness) {
+                completeness = false;
+            }
+
+            xPoints[nPoints] = evt.getPoint().x;
+            yPoints[nPoints] = evt.getPoint().y;
+            nPoints++;
+
+            repaint();
         }
-
-        xPoints[nPoints] = evt.getPoint().x;
-        yPoints[nPoints] = evt.getPoint().y;
-        nPoints++;
-
-        repaint();
+        if (evt.getButton() == MouseEvent.BUTTON3) {
+            completePolygon();
+        }
+        if (evt.getButton() == MouseEvent.BUTTON2) {
+            quit(0);
+        }
     }
 
     private class InputListener implements KeyListener, MouseListener {
