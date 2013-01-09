@@ -94,8 +94,6 @@ public class PolygonsPanel extends JPanel {
         saveToFile(tmpPolygon);
 
         nPoints = 0;
-        xPoints = new int[100];
-        yPoints = new int[100];
 
         repaint();
     }
