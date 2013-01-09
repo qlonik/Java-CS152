@@ -71,6 +71,10 @@ public class PolygonsPanel extends JPanel {
 
     }
 
+    /**
+     * Save polygon to an output stream output
+     * @param polygon Polygon to save
+     */
     private void saveToFile(Polygon polygon) {
         //write all points of polygon into file and add "-1 -1" after polygon
         for (int i = 0; i < polygon.npoints; i++) {
@@ -79,6 +83,9 @@ public class PolygonsPanel extends JPanel {
         output.println("-1\t-1");
     }
 
+    /**
+     * Function finishes polygon when pressed "C" button (or right mouse button)
+     */
     private void completePolygon() {
         completeness = true;
 
@@ -93,6 +100,10 @@ public class PolygonsPanel extends JPanel {
         repaint();
     }
 
+    /**
+     * Function completes unfinished polygon, saves it, and exits
+     * @param code Code of exit
+     */
     private void quit(int code) {
         if (!completeness) {
             Polygon tmpPolygon = new Polygon(xPoints, yPoints, nPoints);
@@ -104,6 +115,10 @@ public class PolygonsPanel extends JPanel {
         System.exit(code);
     }
 
+    /**
+     * KeyPressed event handling
+     * @param evt KeyEvent that happened
+     */
     private void keyPress(KeyEvent evt) {
         if (evt.getKeyCode() == KeyEvent.VK_C) {
             completePolygon();
@@ -114,6 +129,10 @@ public class PolygonsPanel extends JPanel {
         }
     }
 
+    /**
+     * MouseClicked event handling
+     * @param evt MouseEvent that happened
+     */
     private void mouseClick(MouseEvent evt) {
         if (evt.getButton() == MouseEvent.BUTTON1) {
             if (completeness) {
