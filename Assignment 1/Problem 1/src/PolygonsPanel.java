@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 public class PolygonsPanel extends JPanel {
 
     //file path
-    private final String pathname = "polygons.txt";
+    private final String PATHNAME = "polygons.txt";
     //polyline
     private int[] xPoints, yPoints;
     private int nPoints;
@@ -33,7 +33,7 @@ public class PolygonsPanel extends JPanel {
         this.addKeyListener(listener);
         this.addMouseListener(listener);
 
-        file = new File(pathname);
+        file = new File(PATHNAME);
         if (!file.exists()) {
             try {
                 file.createNewFile();
