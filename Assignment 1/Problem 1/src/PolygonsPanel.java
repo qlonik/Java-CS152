@@ -28,6 +28,7 @@ public class PolygonsPanel extends JPanel {
 
     public PolygonsPanel() {
         setPreferredSize(new Dimension(1000, 1000));
+        setFocusable(true);
 
         InputListener listener = new InputListener();
         this.addKeyListener(listener);
@@ -121,8 +122,7 @@ public class PolygonsPanel extends JPanel {
         if (evt.getKeyCode() == KeyEvent.VK_C) {
             completePolygon();
         }
-//        if (e.getKeyCode() == KeyEvent.VK_Q) {
-        if (evt.getKeyChar() == 'q' || evt.getKeyChar() == 'Q') {
+        if (evt.getKeyCode() == KeyEvent.VK_Q) {
             quit(0);
         }
     }
@@ -132,23 +132,15 @@ public class PolygonsPanel extends JPanel {
      * @param evt MouseEvent that happened
      */
     private void mouseClick(MouseEvent evt) {
-        if (evt.getButton() == MouseEvent.BUTTON1) {
-            if (completeness) {
-                completeness = false;
-            }
+        if (completeness) {
+            completeness = false;
+        }
 
-            xPoints[nPoints] = evt.getPoint().x;
-            yPoints[nPoints] = evt.getPoint().y;
-            nPoints++;
+        xPoints[nPoints] = evt.getPoint().x;
+        yPoints[nPoints] = evt.getPoint().y;
+        nPoints++;
 
-            repaint();
-        }
-        if (evt.getButton() == MouseEvent.BUTTON3) {
-            completePolygon();
-        }
-        if (evt.getButton() == MouseEvent.BUTTON2) {
-            quit(0);
-        }
+        repaint();
     }
 
     private class InputListener implements KeyListener, MouseListener {
