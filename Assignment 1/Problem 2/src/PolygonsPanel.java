@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 class PolygonsPanel extends JPanel {
     
     //file path
-    private final String PATHNAME = "polygons.txt";
+    private final String PATHNAME = "canada.dat";
     //input
     private File file;
     //polygon
