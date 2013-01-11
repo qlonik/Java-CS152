@@ -18,12 +18,11 @@ import javax.swing.JPanel;
  */
 class PolygonsPanel extends JPanel {
     
-    //file path
+    //file path input
     private final String PATHNAME = "canada.dat";
-    //input
     private File file;
-    //polygon
-    private ArrayList<Polygon> polygons;
+    //polygons strorage
+    private ArrayList<MyPolygon> polygons;
 
     public PolygonsPanel() {
         setPreferredSize(new Dimension(1000, 1000));
@@ -32,7 +31,7 @@ class PolygonsPanel extends JPanel {
         addMouseListener(listener);
         
         polygons = new ArrayList<>();
-        openFile();
+        openFile(PATHNAME);
         readPolygons();
         
         
@@ -43,10 +42,9 @@ class PolygonsPanel extends JPanel {
         super.paintComponent(g);
         
         if (!polygons.isEmpty()) {
-            for (Polygon poly : polygons) {
+            for (MyPolygon poly : polygons) {
                 if (poly.isFilled()) {
-                    Color rnd = new Color(new Random().nextInt(256), new Random().nextInt(256), new Random().nextInt(256));
-                    g.setColor(rnd);
+                    g.setColor(poly.getColor());
                     g.fillPolygon(poly);
                     g.setColor(Color.BLACK);
                     g.drawPolygon(poly);
@@ -58,20 +56,26 @@ class PolygonsPanel extends JPanel {
         }
     }
     
-    private void openFile(){
-        file = new File(PATHNAME);
+    private void openFile(String path){
+        file = new File(path);
         if (!file.exists()) {
             System.out.println("File does not exist");
         }
     }
     
-    private void readPolygons() {
+    private Scanner openScanner(File file) {
         Scanner scan = null;
         try {
             scan = new Scanner(file);
         } catch (FileNotFoundException ex) {
             System.err.println(ex);
         }
+        
+        return scan;
+    }
+    
+    private void readPolygons() {
+        Scanner scan = openScanner(file);
         
         if (scan != null) {
             int [] xPoints = new int [100];
@@ -81,17 +85,18 @@ class PolygonsPanel extends JPanel {
             while (scan.hasNext()) {
                 int x, y;
                 
-                do {
+                x = scan.nextInt();
+                y = scan.nextInt();
+                while (x != -1 && y != -1) {
+                    xPoints[nPoints] = x;
+                    yPoints[nPoints] = y;
+                    nPoints++;
+                    
                     x = scan.nextInt();
                     y = scan.nextInt();
-                    if (x != -1 && y != -1) {
-                        xPoints[nPoints] = x;
-                        yPoints[nPoints] = y;
-                        nPoints++;
-                    }
-                } while (x != -1 && y != -1);
+                }
                 
-                polygons.add(new Polygon(xPoints, yPoints, nPoints));
+                polygons.add(new MyPolygon(xPoints, yPoints, nPoints));
                 nPoints = 0;
             }
         }
@@ -99,11 +104,12 @@ class PolygonsPanel extends JPanel {
     
     private void mouseClick(MouseEvent evt) {
         Point mouse = evt.getPoint();
-        for (Polygon poly : polygons) {
+        for (MyPolygon poly : polygons) {
             if (poly.contains(mouse)) {
                 poly.setFullness(true);
-            } else {
-                poly.setFullness(false);
+                Color rnd = new Color(new Random().nextInt(256),
+                        new Random().nextInt(256), new Random().nextInt(256));
+                poly.setColor(rnd);
             }
         }
         
