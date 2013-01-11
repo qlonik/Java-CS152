@@ -73,7 +73,7 @@ public class PolygonsPanel extends JPanel {
     }
 
     /**
-     * Save polygon to an output stream output
+     * Save polygon to an output stream
      * @param polygon Polygon to save
      */
     private void saveToFile(Polygon polygon) {
@@ -85,7 +85,7 @@ public class PolygonsPanel extends JPanel {
     }
 
     /**
-     * Function finishes polygon when pressed "C" button (or right mouse button)
+     * Function finishes polygon when pressed "C" button
      */
     private void completePolygon() {
         completeness = true;
