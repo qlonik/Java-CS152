@@ -44,7 +44,7 @@ public class PolygonsPanel extends JPanel {
         }
 
         try {
-            output = new PrintWriter("polygons.txt");
+            output = new PrintWriter(file);
         } catch (FileNotFoundException ex) {
             System.err.println(ex);
         }
