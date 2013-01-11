@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 public class Main {
 
     public static void main (String[] args) {
-        JFrame frame = new JFrame("Poligons Saving");
+        JFrame frame = new JFrame("Poligon saver");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         frame.getContentPane().add(new PolygonsPanel());
