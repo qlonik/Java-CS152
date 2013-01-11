@@ -18,9 +18,8 @@ import javax.swing.JPanel;
  */
 class PolygonsPanel extends JPanel {
     
-    //file path input
+    //filepath
     private final String PATHNAME = "canada.dat";
-    private File file;
     //polygons strorage
     private ArrayList<MyPolygon> polygons;
 
@@ -31,7 +30,6 @@ class PolygonsPanel extends JPanel {
         addMouseListener(listener);
         
         polygons = new ArrayList<>();
-        openFile(PATHNAME);
         readPolygons();
         
         
@@ -56,14 +54,12 @@ class PolygonsPanel extends JPanel {
         }
     }
     
-    private void openFile(String path){
-        file = new File(path);
+    private Scanner openScanner(String path) {
+        File file = new File(path);
         if (!file.exists()) {
             System.out.println("File does not exist");
         }
-    }
-    
-    private Scanner openScanner(File file) {
+        
         Scanner scan = null;
         try {
             scan = new Scanner(file);
@@ -75,7 +71,7 @@ class PolygonsPanel extends JPanel {
     }
     
     private void readPolygons() {
-        Scanner scan = openScanner(file);
+        Scanner scan = openScanner(PATHNAME);
         
         if (scan != null) {
             int [] xPoints = new int [100];
