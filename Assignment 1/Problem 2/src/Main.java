@@ -1,10 +1,11 @@
 
 import javax.swing.JFrame;
 
-
-/**
- *
- * @author qlonik
+/*
+ * Main.java    Author: Nikita Volodin (127196)
+ * CS152        Assignment 1 - Problem #2
+ * 
+ * Driver class for a 2nd problem. It creates JFrame and adds PolygonsPanel
  */
 public class Main {
 

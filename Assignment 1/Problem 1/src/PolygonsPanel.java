@@ -8,9 +8,13 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 
-/**
- *
- * @author qlonik
+/*
+ * PolygonsPanel.java   Author: Nikita Volodin (127196)
+ * CS152                Assignment 1 - Problem #1
+ * 
+ * This panel catches mouse presses inside and draws a polyline. After "C" button
+ * it finishes this polyline to polygon and writes points to file. After button
+ * "Q" program terminates.
  */
 public class PolygonsPanel extends JPanel {
 
@@ -39,14 +43,14 @@ public class PolygonsPanel extends JPanel {
             try {
                 file.createNewFile();
             } catch (IOException ex) {
-                System.err.println(ex);
+                System.out.println(ex);
             }
         }
 
         try {
             output = new PrintWriter(file);
         } catch (FileNotFoundException ex) {
-            System.err.println(ex);
+            System.out.println(ex);
         }
 
         completeness = true;
@@ -57,6 +61,12 @@ public class PolygonsPanel extends JPanel {
         yPoints = new int[100];
     }
 
+    /**
+     * Method draws polyline if points of it exist and draw all polygons if they
+     * are presented in arraylist
+     *
+     * @param g Graphics page to draw
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -74,6 +84,7 @@ public class PolygonsPanel extends JPanel {
 
     /**
      * Save polygon to an output stream
+     *
      * @param polygon Polygon to save
      */
     private void saveToFile(Polygon polygon) {
@@ -94,6 +105,7 @@ public class PolygonsPanel extends JPanel {
         polygons.add(tmpPolygon);
         saveToFile(tmpPolygon);
 
+        //after completing polygon delete polyline
         nPoints = 0;
 
         repaint();
@@ -101,6 +113,7 @@ public class PolygonsPanel extends JPanel {
 
     /**
      * Function completes unfinished polygon, saves it, and exits
+     *
      * @param code Code of exit
      */
     private void quit(int code) {
@@ -116,6 +129,7 @@ public class PolygonsPanel extends JPanel {
 
     /**
      * KeyPressed event handling
+     *
      * @param evt KeyEvent that happened
      */
     private void keyPress(KeyEvent evt) {
@@ -129,9 +143,11 @@ public class PolygonsPanel extends JPanel {
 
     /**
      * MouseClicked event handling
+     *
      * @param evt MouseEvent that happened
      */
     private void mouseClick(MouseEvent evt) {
+        //if prev polygon was finished, just reset flag
         if (completeness) {
             completeness = false;
         }
