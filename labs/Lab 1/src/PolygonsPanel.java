@@ -5,15 +5,16 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 /**
+ * JPanel that draw a polyline and after "C" button it changes state and copies
+ * current polyline in the different zero point
  *
  * @author qlonik
  */
 public class PolygonsPanel extends JPanel {
-    
+
     //polyline
     private ArrayList<Polyline> polylines;
     private Polyline tmp;
-    
     //true if button "C" was pressed
     private boolean cPress;
 
@@ -24,17 +25,24 @@ public class PolygonsPanel extends JPanel {
         InputListener listener = new InputListener();
         this.addKeyListener(listener);
         this.addMouseListener(listener);
-        
+
         cPress = false;
 
         polylines = new ArrayList<>();
         tmp = new Polyline();
     }
 
+    /**
+     * Method draw only first polyline if "C" button was not pressed and draws
+     * all polylines from arraylist if "C" button was pressed (including first
+     * one)
+     *
+     * @param g Graphics page to draw polylines
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+
         if (!cPress) {
             g.drawPolyline(tmp.sanitized_x(), tmp.sanitized_y(), tmp.getNumPoints());
         }
@@ -45,11 +53,15 @@ public class PolygonsPanel extends JPanel {
             }
         }
     }
+
     /**
      * KeyPressed event handling
+     *
      * @param evt KeyEvent that happened
      */
     private void keyPress(KeyEvent evt) {
+        // if "C" button was pressed we save polyline that was created before
+        // and set flag to true (was pressed)
         if (evt.getKeyCode() == KeyEvent.VK_C) {
             polylines.add(tmp);
             cPress = true;
@@ -58,17 +70,22 @@ public class PolygonsPanel extends JPanel {
 
     /**
      * MouseClicked event handling
+     *
      * @param evt MouseEvent that happened
      */
     private void mouseClick(MouseEvent evt) {
         if (!cPress) {
+            // if "C" button was not pressed yet we add all points to a new
+            // polyline and repaint this polyline
             tmp.addPoint(evt.getPoint());
             repaint();
         } else if (cPress) {
+            // if "C" button was pressed, we create a copy of this polyline
+            // with changed zero point, add this polyline and redraw everything
             Polyline copy = tmp.copy();
             copy.setZeroPoint(evt.getPoint());
             polylines.add(copy);
-            
+
             repaint();
         }
     }
