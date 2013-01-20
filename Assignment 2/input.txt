@@ -1,0 +1,7 @@
+Sphere 70.4
+Prism 5 4.5 4
+Pentahedron 1.1 2.2 3.3
+Tetrahedron 4 5
+Cylinder 3.14 45
+Prism 1 2 3
+Tetrahedron 2.342 3.555
