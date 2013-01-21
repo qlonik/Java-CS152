@@ -24,9 +24,9 @@ public class Cylinder extends Circle {
 
     @Override
     public String toString() {
-        return "Cylinder: base radius is " + radius + ", height is " + height
-                + "\nperimeter of base is " + fmt.format(super.getPerimeter())
-                + ", area is " + fmt.format(getArea())
-                + "\nvolume is " + fmt.format(getVolume());
+        return "Cylinder: base radius is " + fmt.format(radius) + ", height is "
+                + fmt.format(height) + "\nperimeter of base is "
+                + fmt.format(super.getPerimeter()) + ", area is "
+                + fmt.format(getArea()) + "\nvolume is " + fmt.format(getVolume());
     }
 }

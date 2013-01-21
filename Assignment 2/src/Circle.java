@@ -23,7 +23,7 @@ class Circle extends Shape {
 
     @Override
     public String toString() {
-        return "Circle: raduis is " + radius
+        return "Circle: raduis is " + fmt.format(radius)
                 + "\ncircumference is " + fmt.format(getPerimeter())
                 + ", area is " + fmt.format(getArea());
     }

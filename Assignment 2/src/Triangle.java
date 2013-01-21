@@ -23,7 +23,7 @@ public class Triangle extends Shape {
 
     @Override
     public String toString() {
-        return "Triangle: side is " + side
+        return "Triangle: side is " + fmt.format(side)
                 + "\nperimeter is " + fmt.format(getPerimeter())
                 + ", area is " + fmt.format(getArea());
     }

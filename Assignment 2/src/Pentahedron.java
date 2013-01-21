@@ -29,8 +29,8 @@ public class Pentahedron extends Rectangle {
 
     @Override
     public String toString() {
-        return "Square Pyramid: width is " + width + ", length is " + length
-                + ", height is " + height
+        return "Square Pyramid: width is " + fmt.format(width) + ", length is "
+                + fmt.format(length) + ", height is " + fmt.format(height)
                 + "\nperimeter of base is " + fmt.format(super.getPerimeter())
                 + ", area is " + fmt.format(getArea())
                 + "\nvolume is " + fmt.format(getVolume());

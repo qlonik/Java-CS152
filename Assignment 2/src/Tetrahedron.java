@@ -15,7 +15,10 @@ public class Tetrahedron extends Triangle {
 
     @Override
     public double getArea() {
-        return 4 * super.getArea();
+        double heightOfSideTriangle = Math.sqrt(Math.pow(height, 2)
+                + Math.pow(1d / 3d * side * Math.sqrt(3) / 2d, 2));
+        double areaSide = 1d / 2d * heightOfSideTriangle * side;
+        return super.getArea() + 3 * areaSide;
     }
 
     public double getVolume() {
@@ -24,9 +27,9 @@ public class Tetrahedron extends Triangle {
 
     @Override
     public String toString() {
-        return "Triangle Pyramid: side is " + side + ", height is " + height
-                + "\nperimeter of base is " + fmt.format(super.getPerimeter())
-                + ", area is " + fmt.format(getArea())
+        return "Triangle Pyramid: side is " + fmt.format(side) + ", height is "
+                + fmt.format(height) + "\nperimeter of base is "
+                + fmt.format(super.getPerimeter()) + ", area is " + fmt.format(getArea())
                 + "\nvolume is " + fmt.format(getVolume());
     }
 }

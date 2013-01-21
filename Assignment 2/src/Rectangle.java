@@ -25,8 +25,8 @@ public class Rectangle extends Shape {
 
     @Override
     public String toString() {
-        return "Rectangle: width is " + width + ", length is " + length
-                + "\nperimeter is " + fmt.format(getPerimeter())
+        return "Rectangle: width is " + fmt.format(width) + ", length is "
+                + fmt.format(length) + "\nperimeter is " + fmt.format(getPerimeter())
                 + ", area is " + fmt.format(getArea());
     }
 }

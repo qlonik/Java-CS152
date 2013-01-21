@@ -15,7 +15,7 @@ public class Prism extends Rectangle {
 
     @Override
     public double getArea() {
-        return 0;
+        return 2 * (width * length + width * height + length * height);
     }
 
     public double getVolume() {
@@ -24,8 +24,8 @@ public class Prism extends Rectangle {
 
     @Override
     public String toString() {
-        return "Prism: width is " + width + ", length is " + length
-                + ", heigth is " + height + "\nperimeter of base is "
+        return "Prism: width is " + fmt.format(width) + ", length is " + fmt.format(length)
+                + ", heigth is " + fmt.format(height) + "\nperimeter of base is "
                 + fmt.format(super.getPerimeter()) + ", area is " + fmt.format(getArea())
                 + "\nvolume is " + fmt.format(getVolume());
     }

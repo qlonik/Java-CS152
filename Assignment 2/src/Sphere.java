@@ -20,8 +20,8 @@ class Sphere extends Circle {
 
     @Override
     public String toString() {
-        return "Sphere: radius is " + radius
-                + "\narea is " + fmt.format(getArea())
+        return "Sphere: radius is " + fmt.format(radius) + "\ncircumference is "
+                + fmt.format(super.getPerimeter()) + ", area is " + fmt.format(getArea())
                 + "\nvolume is " + fmt.format(getVolume());
     }
 }
