@@ -1,3 +1,10 @@
+/*
+ * Triangle.java        Author: Nikita Volodin (127196)
+ * CS152                Assignment 2
+ * 
+ * This class represents 2d triangle with all sides equal to sides,
+ * defined perimeter and area
+ */
 
 public class Triangle extends Shape {
 

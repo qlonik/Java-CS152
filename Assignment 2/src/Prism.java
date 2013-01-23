@@ -1,3 +1,12 @@
+/*
+ * Prism.java       Author: Nikita Volodin (127196)
+ * CS152            Assignment 2
+ * 
+ * This class represents 3d prism (prism with all side to be parallel
+ * and rectangle in a base).
+ * Its base has width and length; prism has a height.
+ * This prism has definitions of its area, volume, and perimeter of its base.
+ */
 
 public class Prism extends Rectangle {
 

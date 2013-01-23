@@ -1,3 +1,10 @@
+/*
+ * Rectangle.java       Author: Nikita Volodin (127196)
+ * CS152                Assignment 2
+ * 
+ * This class represents 2d rectange with width and length,
+ * defined perimeter and area
+ */
 
 public class Rectangle extends Shape {
 

@@ -1,3 +1,10 @@
+/*
+ * Shpere.java      Author: Nikita Volodin (127196)
+ * CS152            Assignment 2
+ * 
+ * This class represents 3d object based on circle. This object has area, volume
+ * and circumference of biggest circle
+ */
 
 class Sphere extends Circle {
 

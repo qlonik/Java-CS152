@@ -1,3 +1,11 @@
+/*
+ * Tetrahedron.java     Author: Nikita Volodin (127196)
+ * CS152                Assignment 2
+ * 
+ * This class represents 3d tetrahedron (pyramid with triangle as a base).
+ * Its base has all equal side. This tetrahedron has definition of its area and
+ * volume and perimeter of a base
+ */
 
 public class Tetrahedron extends Triangle {
 
@@ -15,9 +23,12 @@ public class Tetrahedron extends Triangle {
 
     @Override
     public double getArea() {
+        //height and then area of a side triangle
         double heightOfSideTriangle = Math.sqrt(Math.pow(height, 2)
                 + Math.pow(1d / 3d * side * Math.sqrt(3) / 2d, 2));
         double areaSide = 1d / 2d * heightOfSideTriangle * side;
+
+        //total area of pyramid
         return super.getArea() + 3 * areaSide;
     }
 

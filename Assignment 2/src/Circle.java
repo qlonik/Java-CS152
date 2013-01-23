@@ -1,3 +1,10 @@
+/*
+ * Circle.java      Author: Nikita Volodin (127196)
+ * CS152            Assignment 2
+ * 
+ * This class represents 2d circle with defined perimeter (circumference) 
+ * and area
+ */
 
 class Circle extends Shape {
 
