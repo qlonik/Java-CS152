@@ -1,4 +1,7 @@
 
+/*
+ * Implementation of polish coin as monetary coin
+ */
 public class PolishCoin extends MonetaryCoin {
 
     public PolishCoin() {

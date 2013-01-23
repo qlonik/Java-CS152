@@ -1,4 +1,7 @@
 
+/*
+ * Implementation of coin that can be flipped and does not have value
+ */
 public abstract class Coin {
 
     protected final int HEADS = 0;

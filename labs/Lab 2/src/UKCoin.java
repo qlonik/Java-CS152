@@ -1,4 +1,7 @@
 
+/*
+ * Implementation of uk coin as monetary coin
+ */
 public class UKCoin extends MonetaryCoin {
 
     public UKCoin() {

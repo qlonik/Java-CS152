@@ -1,4 +1,7 @@
 
+/*
+ * Implementation of chinese coin as monetary coin
+ */
 public class ChineseCoin extends MonetaryCoin {
 
     public ChineseCoin() {

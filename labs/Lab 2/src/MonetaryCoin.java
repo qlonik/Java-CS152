@@ -1,4 +1,10 @@
 
+/*
+ * Implementation of coin with value (monetary coin)
+ * It has instance var of unit name and value,
+ * accessors for name and value and mutator for value,
+ * and it has toString method
+ */
 public abstract class MonetaryCoin extends Coin {
 
     String unit;
