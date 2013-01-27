@@ -1,3 +1,9 @@
+/*
+ * MainPanel.java       Author: Nikita Volodin (127196)
+ * CS152                Assignment 3
+ * 
+ * This class is a main panel which draws bars and animate them
+ */
 
 import java.awt.Color;
 import java.awt.Component;

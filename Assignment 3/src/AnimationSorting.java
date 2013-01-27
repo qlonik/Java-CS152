@@ -1,3 +1,11 @@
+/*
+ * AnimationSorting.java    Author: Nikita Volodin (127196)
+ * CS152                    Assignment 3
+ * 
+ * In this problem we exploring sortings. We animate insertion sort
+ * in this assignment.
+ * This class creates frame where all is shown.
+ */
 
 import javax.swing.JFrame;
 

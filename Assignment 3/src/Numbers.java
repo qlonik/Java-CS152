@@ -1,3 +1,10 @@
+/*
+ * Numbers.java     Author: Nikita Volodin (127196)
+ * CS152            Assignment 3
+ * 
+ * This class reads input file and saves it content in array list. 
+ * This class also handle possible exceptions.
+ */
 
 import java.awt.Component;
 import java.io.File;
