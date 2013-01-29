@@ -53,22 +53,63 @@ public class Numbers {
     }
 
     /**
-     * Method tries to read file and find max value and it catches possible
-     * exceptions from methods
+     * Method tries to read file and find max value until we actually can do it
+     * without any exceptions
      */
     private void save() {
-        try {
-            readFile();
-            findMax();
-        } catch (CancellationException exception) {
-            System.err.println("File has not chosen. You cancelled choosing.");
-            reopen("File has not chosen.\nDo you want to exit?", true);
-        } catch (InputMismatchException exception) {
-            System.err.println("Not all content are integers.");
-            reopen("Wrong file.\nDo you want to reopen file?", false);
-        } catch (IndexOutOfBoundsException exception) {
-            System.err.println("Wrong file. Not a text file.");
-            reopen("Wrong file.\nDo you want to reopen file?", false);
+        //result of exception catching
+        int result;
+        do {
+            try {
+                readFile();
+                findMax();
+                result = 0;
+            } catch (CancellationException exception) {
+                System.err.println("File has not chosen. You cancelled choosing.");
+                result = 1;
+            } catch (FileNotFoundException exception) {
+                System.err.println("File has not chosen. File does not exist.");
+                result = 2;
+            } catch (InputMismatchException exception) {
+                System.err.println("Not all content are integers.");
+                result = 3;
+            } catch (IndexOutOfBoundsException exception) {
+                System.err.println("Wrong file. Not a text file.");
+                result = 4;
+            } catch (Exception exception) {
+                System.err.println(exception);
+                result = 5;
+            }
+
+            //exception handling
+            if (result == 1) {
+                reopen("Cancel was pressed.\nDo you want to exit?", true);
+            } else if (result == 2) {
+                reopen("File does not exist.\nDo you want to reopen?", false);
+            } else if (result == 3) {
+                reopen("Wrong file.\nDo you want to reopen file?", false);
+            } else if (result == 4) {
+                reopen("Wrong file.\nDo you want to reopen file?", false);
+            } else if (result == 5) {
+                reopen("Exception happened.\nDo you want to continue?", false);
+            }
+        } while (result != 0);
+    }
+
+    /**
+     * If any exception happened, then we ask user for confirmation of our next
+     * steps. If we do not continue, then we exit from program
+     *
+     * @param msg message in confirm dialog
+     * @param inverse If true - YES option exits, if false - NO option exits
+     */
+    private void reopen(String msg, boolean inverse) {
+        int returnValue = JOptionPane.showConfirmDialog(parent, msg);
+        if (!inverse && (returnValue == JOptionPane.NO_OPTION
+                || returnValue == JOptionPane.CANCEL_OPTION)) {
+            System.exit(0);
+        } else if (inverse && returnValue == JOptionPane.YES_OPTION) {
+            System.exit(0);
         }
     }
 
@@ -79,10 +120,12 @@ public class Numbers {
      * ask him to reopen file
      * @throws InputMismatchException If content of text file is not integers,
      * then we ask to reopen file
+     * @throws FileNotFoundException If user inputs name file into open box, but
+     * file does not exist, then this exception is called
      */
-    private void readFile() throws CancellationException, InputMismatchException {
+    private void readFile() throws CancellationException, InputMismatchException,
+            FileNotFoundException {
         File file = null;
-        Scanner scan = null;
         JFileChooser chooser = new JFileChooser(new File("./"));
 
         int returnValue = chooser.showOpenDialog(parent);
@@ -92,11 +135,7 @@ public class Numbers {
             throw new CancellationException();
         }
 
-        try {
-            scan = new Scanner(file);
-        } catch (FileNotFoundException exception) {
-            System.err.println(exception);
-        }
+        Scanner scan = new Scanner(file);
 
         while (scan.hasNext()) {
             numbers.add(scan.nextInt());
@@ -116,24 +155,5 @@ public class Numbers {
                 max = numbers.get(i);
             }
         }
-    }
-
-    /**
-     * If any exception happened, then we ask to reopen file. If true, then we
-     * try to read file and max value again
-     *
-     * @param msg message in confirm dialog
-     * @param inverse If true - YES option exits, if false - NO option exits
-     */
-    private void reopen(String msg, boolean inverse) {
-        int returnValue = JOptionPane.showConfirmDialog(parent, msg);
-        if (!inverse && (returnValue == JOptionPane.NO_OPTION
-                || returnValue == JOptionPane.CANCEL_OPTION)) {
-            System.exit(0);
-        } else if (inverse && returnValue == JOptionPane.YES_OPTION) {
-            System.exit(0);
-        }
-
-        save();
     }
 }
