@@ -17,16 +17,16 @@ import javax.swing.Timer;
 
 public class MainPanel extends JPanel {
 
-    final int HEIGHT_MULTIPLIER = 2;
-    final int BAR_WIDTH = 6;
-    final int GAP = 6;
-    final int LEFT_RIGHT_SPACING = 50;
-    final int TOP_BOTTOM_SPACING = 20;
-    final Color DEFAULT_COLOR = Color.green;
-    Color barColor;
-    ArrayList<Integer> numbers;
-    int index;
-    boolean done;
+    final private int HEIGHT_MULTIPLIER = 2;
+    final private int BAR_WIDTH = 6;
+    final private int GAP = 6;
+    final private int LEFT_RIGHT_SPACING = 50;
+    final private int TOP_BOTTOM_SPACING = 20;
+    final private Color DEFAULT_COLOR = Color.green;
+    private Color barColor;
+    private ArrayList<Integer> numbers;
+    private int index;
+    private boolean done;
 
     /**
      * Constructor for MainPanel. Here is reading file, setting size for window,
