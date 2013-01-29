@@ -6,16 +6,13 @@
  */
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JColorChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.Timer;
 
 public class MainPanel extends JPanel {
@@ -24,10 +21,12 @@ public class MainPanel extends JPanel {
     final int BAR_WIDTH = 6;
     final int GAP = 6;
     final int LEFT_RIGHT_SPACING = 50;
-    final int TOP_SPACING = 100;
-    ArrayList<Integer> numbers;
+    final int TOP_BOTTOM_SPACING = 20;
+    final Color DEFAULT_COLOR = Color.green;
     Color barColor;
+    ArrayList<Integer> numbers;
     int index;
+    boolean done;
 
     /**
      * Constructor for MainPanel. Here is reading file, setting size for window,
@@ -39,12 +38,13 @@ public class MainPanel extends JPanel {
 
         int maxValue = nums.getMax();
         int width = numbers.size() * (BAR_WIDTH + GAP) - GAP + 2 * LEFT_RIGHT_SPACING;
-        int height = maxValue * HEIGHT_MULTIPLIER + TOP_SPACING;
+        int height = maxValue * HEIGHT_MULTIPLIER + 2 * TOP_BOTTOM_SPACING;
         setPreferredSize(new Dimension(width, height));
 
         barColor = getBarColor();
 
         index = 0;
+        done = false;
         sort();
     }
 
@@ -60,9 +60,17 @@ public class MainPanel extends JPanel {
         for (int i = 0; i < numbers.size(); i++) {
             g.setColor(barColor);
             g.fillRect(LEFT_RIGHT_SPACING + i * (BAR_WIDTH + GAP),
-                    getHeight() - numbers.get(i) * HEIGHT_MULTIPLIER,
+                    getHeight() - numbers.get(i) * HEIGHT_MULTIPLIER - TOP_BOTTOM_SPACING,
                     BAR_WIDTH,
                     numbers.get(i) * HEIGHT_MULTIPLIER);
+            g.setColor(Color.black);
+            g.drawRect(LEFT_RIGHT_SPACING + i * (BAR_WIDTH + GAP),
+                    getHeight() - numbers.get(i) * HEIGHT_MULTIPLIER - TOP_BOTTOM_SPACING,
+                    BAR_WIDTH,
+                    numbers.get(i) * HEIGHT_MULTIPLIER);
+        }
+        if (done) {
+            g.drawString("Sorting complete", 10, TOP_BOTTOM_SPACING);
         }
     }
 
@@ -72,10 +80,10 @@ public class MainPanel extends JPanel {
      * @return Color chosen by user
      */
     private Color getBarColor() {
-        Color color = JColorChooser.showDialog(this, "Choose color for bars", Color.green);
+        Color color = JColorChooser.showDialog(this, "Choose color for bars", DEFAULT_COLOR);
         //if cancel was pressed
         if (color == null) {
-            color = Color.green;
+            color = DEFAULT_COLOR;
         }
 
         return color;
@@ -99,10 +107,10 @@ public class MainPanel extends JPanel {
         index++;
         repaint();
 
-        Timer timer = (Timer) e.getSource();
         if (index == numbers.size()) {
+            Timer timer = (Timer) e.getSource();
+            done = true;
             timer.stop();
-            System.out.println("Done");
         }
     }
 
