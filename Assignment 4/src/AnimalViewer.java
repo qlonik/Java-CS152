@@ -11,7 +11,7 @@ public class AnimalViewer {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
 //        frame.getContentPane().add(new MainPanel());
-        frame.getContentPane().add(new MainPanelReplace());
+        frame.getContentPane().add(new MainPanel());
         
         frame.setVisible(true);
         frame.pack();
