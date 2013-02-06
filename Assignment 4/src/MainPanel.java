@@ -1,3 +1,10 @@
+/*
+ * MainPanel.java       Author: Nikita Volodin (127196)
+ * CS152                Assignment 4
+ * 
+ * This is a main panel of project. It shows list of animals, their pictures,
+ * and can play their noises.
+ */
 
 import java.applet.AudioClip;
 import java.awt.BorderLayout;
@@ -14,11 +21,11 @@ public class MainPanel extends JPanel {
     private final String IMAGE_PATH = "res/images/";
     private final String AUDIO_PATH = "res/audios/";
     private JPanel listPanel, playerPanel;
-    private ViewerPanel blankPanel;
+    private ViewerPanel viewerPanel;
     private ImageIcon currentImage;
     private AudioClip currentAudio;
     private JLabel icon;
-    private JButton play, stop;
+    private JButton play;
     private JList<String> list;
     private String[] animals = {"Bird", "Cat", "Cow", "Cricket", "Crow",
         "Dog", "Donkey", "Duck", "Goat", "Hen",
@@ -32,7 +39,7 @@ public class MainPanel extends JPanel {
         
         //GUI
         listPanel = new JPanel();
-        blankPanel = new ViewerPanel();
+        viewerPanel = new ViewerPanel();
 
         //listPanel
         list = new JList<>(animals);
@@ -40,7 +47,7 @@ public class MainPanel extends JPanel {
         listPanel.add(list);
 
         //mainPanel
-        JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, listPanel, blankPanel);
+        JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, listPanel, viewerPanel);
         setPreferredSize(new Dimension(700, 700));
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         add(splitter);
@@ -62,12 +69,8 @@ public class MainPanel extends JPanel {
 
             //playerPanel
             play = new JButton("Play");
-            stop = new JButton("Stop");
-            ButtonListener listener = new ButtonListener();
-            play.addActionListener(listener);
-            stop.addActionListener(listener);
+            play.addActionListener(new ButtonListener());
             playerPanel.add(play);
-            playerPanel.add(stop);
 
             //adding on viewerPanel
             add(scrollImagePanel, BorderLayout.CENTER);
@@ -81,6 +84,9 @@ public class MainPanel extends JPanel {
         public void valueChanged(ListSelectionEvent e) {
             String selectedItem = list.getSelectedValue().toLowerCase();
             try {
+                if (currentAudio != null) {
+                    currentAudio.stop();
+                }
                 currentAudio = JApplet.newAudioClip(new URL("file", "localhost",
                         AUDIO_PATH + selectedItem + ".au"));
             } catch (Exception exception) {
@@ -97,10 +103,8 @@ public class MainPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == play && currentAudio != null) {
-                currentAudio.play();
-            }
-            if (e.getSource() == stop && currentAudio != null) {
                 currentAudio.stop();
+                currentAudio.play();
             }
         }
     }
