@@ -1,6 +1,6 @@
 /*
  * RecursiveTree.java       Author: Nikita Volodin (127196)
- * CS152                    Assignment 5
+ * CS152                    Assignment 5 - Problem #1
  * 
  * Driver for a program that draws recursive tree
  */
