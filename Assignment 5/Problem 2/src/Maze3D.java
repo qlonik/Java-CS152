@@ -12,7 +12,7 @@ public class Maze3D {
     final int PATH = 7;
     //maze
     private int[][][] maze = {
-        {{1, 1, 1, 1, 0}, // Beginning on far left of this row
+        {{1, 1, 1, 1, 0}, // Beginning on close left of this row
             {0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0}, // First section
             {0, 0, 0, 0, 0},
@@ -47,7 +47,7 @@ public class Maze3D {
         Maze3D labyrinth = new Maze3D();
         System.out.println("Before path: ");
         System.out.println(labyrinth);
-        
+
         if (labyrinth.solve(0, 0, 0)) {
             System.out.println();
             System.out.println("With path: ");
@@ -55,16 +55,17 @@ public class Maze3D {
         } else {
             System.out.println("Impossible to solve");
         }
-        
+
 
     }
 
     /**
      * Method that recursively solves maze
+     *
      * @param width position of cursor in "width" axis
      * @param height position of cursor in "height" axis
      * @param depth position of cursor in "depth" axis
-     * @return TRUE if we can go to the current position
+     * @return TRUE if we went to the current position
      */
     public boolean solve(int width, int height, int depth) {
         boolean done = false;
@@ -93,7 +94,7 @@ public class Maze3D {
                     done = solve(width, height, depth - 1); //out of the deep
                 }
             }
-            
+
             if (done) {
                 maze[width][height][depth] = PATH;
             }
@@ -104,6 +105,7 @@ public class Maze3D {
 
     /**
      * Checks validity of the position
+     *
      * @param width position of cursor in "width" axis
      * @param height position of cursor in "height" axis
      * @param depth position of cursor in "depth" axis
@@ -122,7 +124,8 @@ public class Maze3D {
     }
 
     /**
-     * Returns maze
+     * Returns maze as string
+     *
      * @return String representation of maze
      */
     @Override

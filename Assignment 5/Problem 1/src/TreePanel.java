@@ -60,6 +60,7 @@ class TreePanel extends JPanel {
      */
     /**
      * Method that recursively draws tree
+     *
      * @param g Graphics page where to draw
      * @param startX starting x coordinate of trunk
      * @param startY starting y coordinate of trunk
