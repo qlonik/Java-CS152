@@ -23,25 +23,21 @@ public class Client {
         //reassign error log output
         try {
             File errFile = new File(ERR_PATH);
-//            if (!errFile.exists()) {
-                errFile.createNewFile();
-//            }
+            errFile.createNewFile();
             System.setErr(new PrintStream(errFile));
         } catch (IOException ex) {
             System.err.println("Could not create log file");
         }
         //</editor-fold>
         //--END--
-        
+
         //--BEGIN--
         //setup output log
         final String OUT_PATH = "./log/out.log";
         //<editor-fold defaultstate="collapsed" desc="reassign output log to file">
         try {
             File outFile = new File(OUT_PATH);
-//            if (!outFile.exists()) {
-                outFile.createNewFile();
-//            }
+            outFile.createNewFile();
             System.setOut(new PrintStream(outFile));
         } catch (IOException ex) {
             System.err.println("Could not create log file");
@@ -109,7 +105,7 @@ public class Client {
                 try {
                     switch (command) {
                         case "h":
-                            client.callHelp();
+                            client.showHelp();
                             break;
                         case "c":
                             client.createAccount(token);
@@ -117,10 +113,20 @@ public class Client {
                         case "x":
                             client.deleteAccount(token);
                             break;
+                        case "d":
+                            client.deposit(token);
+                            break;
+                        case "w":
+                            client.withdraw(token);
+                            break;
+                        case "i":
+                            client.inquire(token);
+                            break;
                         case "q":
+                            client.closeConnection();
                             break;
                         default:
-                            client.callHelp();
+                            client.showHelp();
                             break;
                     }
                 } catch (NumberFormatException ex) {
@@ -183,7 +189,7 @@ public class Client {
      *      "INQUIRE:<account id>;"
      */
     /**
-     * Sends data to server to access some data
+     * Sends data to server
      *
      * @param data array list of data to send
      */
@@ -202,7 +208,7 @@ public class Client {
     /**
      * Prints help to standard output
      */
-    private void callHelp() {
+    private void showHelp() {
         //--BEGIN-- intro
         System.out.println("Client for bank system");
         System.out.println();
@@ -249,6 +255,13 @@ public class Client {
         //--END-- usage
     }
 
+    private void closeConnection() {
+        ArrayList<String> data = new ArrayList<>();
+        data.add("CLOSE");
+
+        send(data);
+    }
+
     private void createAccount(String token) throws NumberFormatException {
         token = token.substring(token.indexOf(" ") + 1); //remove command character
 
@@ -264,14 +277,123 @@ public class Client {
 
         ArrayList<String> received = receive();
 
-        if (received.get(0).equals("SUCCESS")) {
-            System.out.println("Account successfully created with id: " + accountID
-                    + " and starting amount: " + amount);
-        } else if (received.get(0).equals("FAIL")) {
-            System.out.println("Account was not created. Current account id is in use");
+        switch (received.get(0)) {
+            case "SUCCESS":
+                String receivedAmount = received.get(1);
+                System.out.println("Account with id " + accountID + " successfully"
+                        + " created; starting amount: " + receivedAmount);
+                break;
+            case "FAIL":
+                int failCode = Integer.parseInt(received.get(1));
+                System.out.println("Account was not created. Current account id is in use");
+                break;
         }
     }
 
     private void deleteAccount(String token) {
+        token = token.substring(token.indexOf(" ") + 1); //remove command character
+
+        String accountID = token; //only account id left
+
+        ArrayList<String> data = new ArrayList<>();
+        data.add("DELETE");
+        data.add(accountID);
+        send(data);
+
+        ArrayList<String> received = receive();
+
+        switch (received.get(0)) {
+            case "SUCCESS":
+                String receivedAmount = received.get(1);
+                System.out.println("Account with id " + accountID + " was "
+                        + "successfully deleted; closing amount was " + receivedAmount);
+                break;
+            case "FAIL":
+                int failCode = Integer.parseInt(received.get(1));
+                System.out.println("Account was not deleted. This account id is missing");
+                break;
+        }
+    }
+
+    private void deposit(String token) throws NumberFormatException {
+        token = token.substring(token.indexOf(" ") + 1); //remove command character
+
+        String accountID = token.substring(0, token.indexOf(" ")); //from beginning to first space
+        String amount = token.substring(token.indexOf(" ") + 1); //from space to the end
+        amount = Double.toString(Double.parseDouble(amount)); //checking if it is double
+
+        ArrayList<String> data = new ArrayList<>();
+        data.add("DEPOSIT");     //command to server to create account
+        data.add(accountID);    //account id
+        data.add(amount);       //starting amount of money
+        send(data);
+
+        ArrayList<String> received = receive();
+
+        switch (received.get(0)) {
+            case "SUCCESS":
+                String receivedAmount = received.get(1);
+                System.out.println("Account with id " + accountID + " successfully"
+                        + " reseived amount; now it is: " + receivedAmount);
+                break;
+            case "FAIL":
+                int failCode = Integer.parseInt(received.get(1));
+                System.out.println("Account was not created. Current account id is in use");
+                break;
+        }
+    }
+
+    private void withdraw(String token) throws NumberFormatException {
+        token = token.substring(token.indexOf(" ") + 1); //remove command character
+
+        String accountID = token.substring(0, token.indexOf(" ")); //from beginning to first space
+        String amount = token.substring(token.indexOf(" ") + 1); //from space to the end
+        amount = Double.toString(Double.parseDouble(amount)); //checking if it is double
+
+        ArrayList<String> data = new ArrayList<>();
+        data.add("WITHDRAW");     //command to server to create account
+        data.add(accountID);    //account id
+        data.add(amount);       //starting amount of money
+        send(data);
+
+        ArrayList<String> received = receive();
+
+        switch (received.get(0)) {
+            case "SUCCESS":
+                String receivedAmount = received.get(1);
+                System.out.println("Account with id " + accountID + " successfully"
+                        + " reseived amount; now it is: " + receivedAmount);
+                break;
+            case "FAIL":
+                int failCode = Integer.parseInt(received.get(1));
+                System.out.println("Account was not created. Current account id is in use");
+                break;
+        }
+    }
+
+    private void inquire(String token) {
+        token = token.substring(token.indexOf(" ") + 1); //remove command character
+
+        String accountID = token; //only account id left
+
+        ArrayList<String> data = new ArrayList<>();
+        data.add("INQUIRE");
+        data.add(accountID);
+        send(data);
+
+        ArrayList<String> received = receive();
+
+        switch (received.get(0)) {
+            case "SUCCESS":
+                String receivedAmount = received.get(1);
+                System.out.println("Account with id " + accountID
+                        + " was successfully deleted; closing amount was "
+                        + receivedAmount);
+                break;
+            case "FAIL":
+                int failCode = Integer.parseInt(received.get(1));
+                System.out.println("Account was not deleted. This account id is missing");
+                break;
+        }
     }
 }
