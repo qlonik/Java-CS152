@@ -12,16 +12,14 @@ import java.util.ArrayList;
  */
 public class Listener extends Thread {
 
-    final String LOG_FILE_PATH = "./log/error.log";
     ArrayList<Connection> connections = new ArrayList<>();
     ServerSocket ss = null;
 
-    public Listener() {
+    public Listener(int port) {
         try {
-            ss = new ServerSocket(56848);
+            ss = new ServerSocket(port);
         } catch (IOException ex) {
-            System.err.println(System.currentTimeMillis() + "\t"
-                    + ex.getMessage() + "\n" + ex.getStackTrace());
+            System.err.println(System.currentTimeMillis() + "\t" + ex);
         }
 
         System.out.println("Inet addr: " + ss.getInetAddress()

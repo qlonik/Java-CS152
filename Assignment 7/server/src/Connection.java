@@ -16,55 +16,36 @@ public class Connection extends Thread {
 
     public Connection() {
         s = null;
-
+        
         in = null;
-
         out = null;
     }
 
     public Connection(Socket s, Listener parent) throws IOException {
         this.s = s;
-
+        
         in = new Scanner(s.getInputStream());
-//        in.useDelimiter("\\r\\n");
-//        in.useDelimiter(";");
-
+        in.useDelimiter(";");
         out = new PrintStream(s.getOutputStream());
 
         this.parent = parent;
-
-//        listen();
     }
 
     @Override
     public void run() {
         try {
-            out.println("To close a connection type \"CLOSE;\"");
+            String line;
+            do {
+                line = in.next();
+                System.out.println("Received: " + line);
+            } while (!line.equals("CLOSE"));
 
-            String line = "";
-            while (!line.equals("CLOSE")) {
-                line = in.nextLine();
-                out.println("You sent: \"" + line + "\"");
-                System.out.println(line);
-            }
-
-            out.println("Closing connection...");
             s.close();
-            System.out.println("client disconnected");
+            System.out.println("Client disconnected");
         } catch (IOException ex) {
-            System.err.println(System.currentTimeMillis() + "\t"
-                    + ex.getMessage() + "\n" + ex.getStackTrace());
+            System.err.println(System.currentTimeMillis() + "\t" + ex);
         } catch (Exception ex) {
-            System.err.println(System.currentTimeMillis() + "\t"
-                    + ex.getMessage() + "\n" + ex.getStackTrace());
+            System.err.println(System.currentTimeMillis() + "\t" + ex);
         }
     }
-//    private void listen() {
-//        out.print("hi");
-////        System.out.println(in);
-//        while (in.hasNext()) {
-//            String line = in.nextLine();
-//            System.out.println(line);
-//        }
-//    }
 }
