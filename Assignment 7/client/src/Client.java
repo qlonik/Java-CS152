@@ -16,34 +16,59 @@ public class Client {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        //--BEGIN--
+        //setup error log
         final String ERR_PATH = "./log/error.log";
         //<editor-fold defaultstate="collapsed" desc="reassign error log to output file">
         //reassign error log output
         try {
             File errFile = new File(ERR_PATH);
-            if (!errFile.exists()) {
+//            if (!errFile.exists()) {
                 errFile.createNewFile();
-            }
-            PrintStream errLog = new PrintStream(errFile);
-            System.setErr(errLog);
+//            }
+            System.setErr(new PrintStream(errFile));
         } catch (IOException ex) {
             System.err.println("Could not create log file");
         }
         //</editor-fold>
+        //--END--
+        
+        //--BEGIN--
+        //setup output log
+        final String OUT_PATH = "./log/out.log";
+        //<editor-fold defaultstate="collapsed" desc="reassign output log to file">
+        try {
+            File outFile = new File(OUT_PATH);
+//            if (!outFile.exists()) {
+                outFile.createNewFile();
+//            }
+            System.setOut(new PrintStream(outFile));
+        } catch (IOException ex) {
+            System.err.println("Could not create log file");
+        }
+        //</editor-fold>
+        //--END--
 
         Scanner kb = new Scanner(System.in);
 
+        final String DEFAULT_IP = "127.0.0.1";
         final int DEFAULT_PORT = 56848;
         String ip;      //IP from user
         int port;       //port from user
         //<editor-fold defaultstate="collapsed" desc="asking for IP and port">
-        System.out.print("Type hostname or IP adress of the server: ");
+        System.out.print("Type hostname or IP adress of the server (default is "
+                + DEFAULT_IP + "): ");
         ip = kb.nextLine();
-        //        System.out.println();
+        System.out.println();
+        if (ip == null || ip.equals("")) {
+            System.err.println("Input string is empty. Using default address " + DEFAULT_IP);
+            ip = DEFAULT_IP;
+        }
 
         try {
-            System.out.print("Type port: ");
+            System.out.print("Type port (default is " + DEFAULT_PORT + "): ");
             String portString = kb.nextLine();
+            System.out.println();
             port = Integer.parseInt(portString);
             if (port < 0 || port > 65535) {
                 System.err.println("Port is out of bound. Using default port " + DEFAULT_PORT);
@@ -74,7 +99,12 @@ public class Client {
                 System.out.println();
 
                 token = token.trim();
-                String command = token.substring(0, token.indexOf(" "));
+                String command;
+                if (token.indexOf(" ") > -1) {
+                    command = token.substring(0, token.indexOf(" "));
+                } else {
+                    command = token;
+                }
 
                 try {
                     switch (command) {
@@ -87,12 +117,17 @@ public class Client {
                         case "x":
                             client.deleteAccount(token);
                             break;
+                        case "q":
+                            break;
                         default:
                             client.callHelp();
                             break;
                     }
                 } catch (NumberFormatException ex) {
                     System.out.println("Error entering amount. It is not a double");
+                    System.err.println(ex);
+                } catch (IndexOutOfBoundsException ex) {
+                    System.out.println("Wrong number of items in command");
                     System.err.println(ex);
                 } catch (Exception ex) {
                     System.err.println(ex);
@@ -161,7 +196,7 @@ public class Client {
 
         msg = msg.substring(0, msg.length() - 1) + ";";
 
-        output.print(msg);
+        output.println(msg);
     }
 
     /**
@@ -204,7 +239,7 @@ public class Client {
         System.out.println("\t\t" + "At success returns new balance or error "
                 + "(missing account; insufficient funds)");
         System.out.println();
-        
+
         //deleting account
         System.out.println("\t" + "x <account id>");
         System.out.println("\t\t" + "Deletes account with specified id");
@@ -222,8 +257,9 @@ public class Client {
         amount = Double.toString(Double.parseDouble(amount)); //checking if it is double
 
         ArrayList<String> data = new ArrayList<>();
-        data.add(accountID);
-        data.add(amount);
+        data.add("CREATE");     //command to server to create account
+        data.add(accountID);    //account id
+        data.add(amount);       //starting amount of money
         send(data);
 
         ArrayList<String> received = receive();
