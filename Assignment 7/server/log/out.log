@@ -1,0 +1,11 @@
+Inet addr: 0.0.0.0/0.0.0.0	Port: 56848
+Waiting for a client
+1363057231273	client from /127.0.0.1
+Waiting for a client
+1234:5.0;
+1363057334361	client from /127.0.0.1
+Waiting for a client
+CREATE:1234:5.0;
+1363057415523	client from /127.0.0.1
+Waiting for a client
+CREATE:123:7.0;
