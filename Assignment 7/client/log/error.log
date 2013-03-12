@@ -1,0 +1,4 @@
+Input is not an integer. Using default port 56848
+Exception in thread "main" java.lang.StringIndexOutOfBoundsException: String index out of range: -1
+	at java.lang.String.substring(String.java:1911)
+	at Client.main(Client.java:79)
