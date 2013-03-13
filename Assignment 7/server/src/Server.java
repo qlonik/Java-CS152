@@ -2,15 +2,55 @@
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /*
  * Server.java  Nikita Volodin
  * CS152        Assigment 7
  * 
- * Driver class for a server side of an application
+ * Server starter class. It listens for new connections, and creates each new
+ * for each client
  */
-public class Server {
+public class Server extends Thread {
+
+    Storage storage = new Storage();
+    ArrayList<Connection> connections = new ArrayList<>();
+    ServerSocket ss = null;
+
+    public Server(int port) {
+        try {
+            ss = new ServerSocket(port);
+        } catch (IOException ex) {
+            System.err.println(System.currentTimeMillis() + "\t" + ex);
+        }
+
+        System.out.println("Inet addr: " + ss.getInetAddress()
+                + "\tPort: " + ss.getLocalPort());
+
+        this.setName("Server");
+        this.start();
+    }
+
+    public void run() {
+        try {
+            while (true) {
+                System.out.println("Waiting for a client");
+                Socket s = ss.accept();
+                System.out.println(System.currentTimeMillis()
+                        + "\tclient from " + s.getInetAddress());
+
+                Connection conn = new Connection(s, this);
+                conn.start();
+                connections.add(conn);
+            }
+        } catch (IOException ex) {
+            System.err.println(System.currentTimeMillis() + "\t"
+                    + ex.getMessage() + "\n" + ex.getStackTrace());
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -50,7 +90,7 @@ public class Server {
 //        Scanner kb = new Scanner(System.in);
 //        
 //        int port;
-//        //<editor-fold defaultstate="expanded" desc="asking for port">
+        //<editor-fold defaultstate="expanded" desc="asking for port">
 //        try {
 //            System.out.print("Type port (default is " + DEFAULT_PORT + "): ");
 //            String portString = kb.nextLine(); //the line could be empty
@@ -65,8 +105,8 @@ public class Server {
 //            port = DEFAULT_PORT;
 //        }
 //        //</editor-fold>
-        
+
         int port = DEFAULT_PORT;
-        Listener listener = new Listener(port);
+        Server server = new Server(port);
     }
 }
