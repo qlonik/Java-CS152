@@ -8,6 +8,8 @@ import java.util.Scanner;
 
 public class Client {
 
+    private String ip;
+    private int port;
     private Socket s;
     private Scanner input;
     private PrintStream output;
@@ -78,13 +80,14 @@ public class Client {
 
         Client client = null;
         //<editor-fold defaultstate="collapsed" desc="assigning socket to client object">
-        try {
-            Socket s = new Socket(ip, port);
-            client = new Client(s);
-        } catch (IOException ex) {
-            System.out.println("Could not connect to server");
-            System.err.println(ex);
-        }
+//        try {
+//            Socket s = new Socket(ip, port);
+//            client = new Client(s);
+//        } catch (IOException ex) {
+//            System.out.println("Could not connect to server");
+//            System.err.println(ex);
+//        }
+        client = new Client(ip, port);
         //</editor-fold>
 
         if (client != null) {
@@ -122,9 +125,9 @@ public class Client {
                         case "i":
                             client.inquire(token);
                             break;
-                        case "q":
-                            client.closeConnection();
-                            break;
+//                        case "q":
+//                            client.closeConnection();
+//                            break;
                         default:
                             client.showHelp();
                             break;
@@ -142,15 +145,28 @@ public class Client {
         }
     }
 
-    public Client(Socket s) {
-        this.s = s;
+//    public Client(Socket s) {
+//        this.s = s;
+//
+//        try {
+//            input = new Scanner(s.getInputStream());
+//            output = new PrintStream(s.getOutputStream());
+//        } catch (IOException ex) {
+//            System.err.println(ex);
+//        }
+//    }
+    public Client(String ip, int port) {
+        this.ip = ip;
+        this.port = port;
+    }
 
-        try {
-            input = new Scanner(s.getInputStream());
-            output = new PrintStream(s.getOutputStream());
-        } catch (IOException ex) {
-            System.err.println(ex);
-        }
+    private void openConnection() throws IOException {
+        this.s = new Socket(ip, port);
+
+        this.input = new Scanner(s.getInputStream());
+        input.useDelimiter(";");
+        
+        this.output = new PrintStream(s.getOutputStream());
     }
 
     /*
@@ -163,11 +179,11 @@ public class Client {
      *
      * @return array list of received data
      */
-    public ArrayList<String> receive() {
+    private ArrayList<String> receive() {        
         ArrayList<String> data = new ArrayList<>();
 
-        String msg = input.nextLine();
-        msg = msg.substring(0, msg.length() - 1);
+        String msg = input.next();
+//        msg = msg.substring(0, msg.length() - 1); //remove ";" after each message
 
         Scanner scan = new Scanner(msg);
         scan.useDelimiter(":");
@@ -193,7 +209,7 @@ public class Client {
      *
      * @param data array list of data to send
      */
-    public void send(ArrayList<String> data) {
+    private void send(ArrayList<String> data) {
         String msg = "";
 
         for (int i = 0; i < data.size(); i++) {
@@ -203,6 +219,21 @@ public class Client {
         msg = msg.substring(0, msg.length() - 1) + ";";
 
         output.println(msg);
+    }
+
+    public ArrayList<String> communicate(ArrayList<String> data) {
+        try {
+            openConnection();
+        } catch (IOException ex) {
+            System.out.println("Could not connect to server");
+            System.err.println(ex);
+        }
+        
+        send(data);
+        
+        ArrayList<String> received = receive();
+        
+        return received;
     }
 
     /**
@@ -255,13 +286,12 @@ public class Client {
         //--END-- usage
     }
 
-    private void closeConnection() {
-        ArrayList<String> data = new ArrayList<>();
-        data.add("CLOSE");
-
-        send(data);
-    }
-
+//    private void closeConnection() {
+//        ArrayList<String> data = new ArrayList<>();
+//        data.add("CLOSE");
+//
+//        send(data);
+//    }
     private void createAccount(String token) throws NumberFormatException {
         token = token.substring(token.indexOf(" ") + 1); //remove command character
 
@@ -273,9 +303,11 @@ public class Client {
         data.add("CREATE");     //command to server to create account
         data.add(accountID);    //account id
         data.add(amount);       //starting amount of money
-        send(data);
-
-        ArrayList<String> received = receive();
+//        send(data);
+//
+//        ArrayList<String> received = receive();
+        
+        ArrayList<String> received = communicate(data);
 
         switch (received.get(0)) {
             case "SUCCESS":
@@ -298,9 +330,11 @@ public class Client {
         ArrayList<String> data = new ArrayList<>();
         data.add("DELETE");
         data.add(accountID);
-        send(data);
-
-        ArrayList<String> received = receive();
+//        send(data);
+//
+//        ArrayList<String> received = receive();
+        
+        ArrayList<String> received = communicate(data);
 
         switch (received.get(0)) {
             case "SUCCESS":
@@ -326,9 +360,11 @@ public class Client {
         data.add("DEPOSIT");     //command to server to create account
         data.add(accountID);    //account id
         data.add(amount);       //starting amount of money
-        send(data);
-
-        ArrayList<String> received = receive();
+//        send(data);
+//
+//        ArrayList<String> received = receive();
+        
+        ArrayList<String> received = communicate(data);
 
         switch (received.get(0)) {
             case "SUCCESS":
@@ -354,9 +390,11 @@ public class Client {
         data.add("WITHDRAW");     //command to server to create account
         data.add(accountID);    //account id
         data.add(amount);       //starting amount of money
-        send(data);
-
-        ArrayList<String> received = receive();
+//        send(data);
+//
+//        ArrayList<String> received = receive();
+        
+        ArrayList<String> received = communicate(data);
 
         switch (received.get(0)) {
             case "SUCCESS":
@@ -379,9 +417,11 @@ public class Client {
         ArrayList<String> data = new ArrayList<>();
         data.add("INQUIRE");
         data.add(accountID);
-        send(data);
-
-        ArrayList<String> received = receive();
+//        send(data);
+//
+//        ArrayList<String> received = receive();
+        
+        ArrayList<String> received = communicate(data);
 
         switch (received.get(0)) {
             case "SUCCESS":

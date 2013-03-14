@@ -1,2 +1,6 @@
 Input string is empty. Using default address 127.0.0.1
 Input is not an integer. Using default port 56848
+java.util.NoSuchElementException: No line found
+java.util.NoSuchElementException: No line found
+Exception in thread "main" java.util.NoSuchElementException: No line found
+	at java.util.Scanner.nextLine(Scanner.java:1585)
