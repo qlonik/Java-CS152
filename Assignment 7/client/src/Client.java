@@ -79,16 +79,7 @@ public class Client {
         //</editor-fold>
 
         Client client = null;
-        //<editor-fold defaultstate="collapsed" desc="assigning socket to client object">
-//        try {
-//            Socket s = new Socket(ip, port);
-//            client = new Client(s);
-//        } catch (IOException ex) {
-//            System.out.println("Could not connect to server");
-//            System.err.println(ex);
-//        }
         client = new Client(ip, port);
-        //</editor-fold>
 
         if (client != null) {
             String token;
@@ -125,9 +116,6 @@ public class Client {
                         case "i":
                             client.inquire(token);
                             break;
-//                        case "q":
-//                            client.closeConnection();
-//                            break;
                         default:
                             client.showHelp();
                             break;
@@ -145,16 +133,6 @@ public class Client {
         }
     }
 
-//    public Client(Socket s) {
-//        this.s = s;
-//
-//        try {
-//            input = new Scanner(s.getInputStream());
-//            output = new PrintStream(s.getOutputStream());
-//        } catch (IOException ex) {
-//            System.err.println(ex);
-//        }
-//    }
     public Client(String ip, int port) {
         this.ip = ip;
         this.port = port;
@@ -165,7 +143,7 @@ public class Client {
 
         this.input = new Scanner(s.getInputStream());
         input.useDelimiter(";");
-        
+
         this.output = new PrintStream(s.getOutputStream());
     }
 
@@ -179,7 +157,7 @@ public class Client {
      *
      * @return array list of received data
      */
-    private ArrayList<String> receive() {        
+    private ArrayList<String> receive() {
         ArrayList<String> data = new ArrayList<>();
 
         String msg = input.next();
@@ -221,6 +199,12 @@ public class Client {
         output.println(msg);
     }
 
+    /**
+     * Send data to server and receives answer from it
+     *
+     * @param data Data to send on server
+     * @return Data received form server
+     */
     public ArrayList<String> communicate(ArrayList<String> data) {
         try {
             openConnection();
@@ -228,11 +212,11 @@ public class Client {
             System.out.println("Could not connect to server");
             System.err.println(ex);
         }
-        
+
         send(data);
-        
+
         ArrayList<String> received = receive();
-        
+
         return received;
     }
 
@@ -286,12 +270,6 @@ public class Client {
         //--END-- usage
     }
 
-//    private void closeConnection() {
-//        ArrayList<String> data = new ArrayList<>();
-//        data.add("CLOSE");
-//
-//        send(data);
-//    }
     private void createAccount(String token) throws NumberFormatException {
         token = token.substring(token.indexOf(" ") + 1); //remove command character
 
@@ -303,10 +281,7 @@ public class Client {
         data.add("CREATE");     //command to server to create account
         data.add(accountID);    //account id
         data.add(amount);       //starting amount of money
-//        send(data);
-//
-//        ArrayList<String> received = receive();
-        
+
         ArrayList<String> received = communicate(data);
 
         switch (received.get(0)) {
@@ -330,10 +305,7 @@ public class Client {
         ArrayList<String> data = new ArrayList<>();
         data.add("DELETE");
         data.add(accountID);
-//        send(data);
-//
-//        ArrayList<String> received = receive();
-        
+
         ArrayList<String> received = communicate(data);
 
         switch (received.get(0)) {
@@ -360,10 +332,7 @@ public class Client {
         data.add("DEPOSIT");     //command to server to create account
         data.add(accountID);    //account id
         data.add(amount);       //starting amount of money
-//        send(data);
-//
-//        ArrayList<String> received = receive();
-        
+
         ArrayList<String> received = communicate(data);
 
         switch (received.get(0)) {
@@ -390,10 +359,7 @@ public class Client {
         data.add("WITHDRAW");     //command to server to create account
         data.add(accountID);    //account id
         data.add(amount);       //starting amount of money
-//        send(data);
-//
-//        ArrayList<String> received = receive();
-        
+
         ArrayList<String> received = communicate(data);
 
         switch (received.get(0)) {
@@ -417,10 +383,7 @@ public class Client {
         ArrayList<String> data = new ArrayList<>();
         data.add("INQUIRE");
         data.add(accountID);
-//        send(data);
-//
-//        ArrayList<String> received = receive();
-        
+
         ArrayList<String> received = communicate(data);
 
         switch (received.get(0)) {

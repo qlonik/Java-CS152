@@ -3,3 +3,29 @@ Type port (default is 56848):
 Write a command ("h" for help, "q" to quit): 
 Write a command ("h" for help, "q" to quit): 
 Write a command ("h" for help, "q" to quit): 
+Write a command ("h" for help, "q" to quit): 
+Write a command ("h" for help, "q" to quit): 
+Write a command ("h" for help, "q" to quit): 
+Client for bank system
+
+Usage: 
+	c <accound id> <starting balance>
+		Creates new account with specified id and starting balance
+		Returns starting balance if created right or return error (account number is in use)
+
+	d <account id> <amount>
+		Adds amount to balance
+		At success returns new balance or error (missing account)
+
+	i <account id>
+		Current balance
+		At success returns amount on the account or error (missing account)
+
+	w <account id> <amount>
+		Withdraw amount from account
+		At success returns new balance or error (missing account; insufficient funds)
+
+	x <account id>
+		Deletes account with specified id
+		Returns balance before closing or error (missing account)
+
