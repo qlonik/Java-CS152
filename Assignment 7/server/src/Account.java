@@ -14,32 +14,40 @@ public class Account {
 
     final private String PATH = "./users/";
     private FileWriter out = null;
-    private String name = null;
     private int accountID = 0;
-    private long money = 0;
+    private double money = 0;
 
-    public Account(String name, int account, int startingDeposit) {
-        this.name = name;
+    public Account(int account, double startingDeposit) {
         accountID = account;
         money = startingDeposit;
 
         try {
             createFile();
         } catch (IOException ex) {
-            System.err.println(System.currentTimeMillis() + "\t"
-                    + ex.getMessage() + "\n" + ex.getStackTrace());
+            System.out.println("Could not create file for account #" + accountID);
+            System.err.println(ex);
         }
     }
 
-    public String getName() {
-        return name;
+    public Account(String account, String startingDeposit) {
+        this(Integer.parseInt(account), Double.parseDouble(startingDeposit));
     }
-
+    
+    /**
+     * Returns ID of this account in int form
+     * 
+     * @return account id
+     */
     public int getAccountID() {
         return accountID;
     }
 
-    public long getMoney() {
+    /**
+     * Returns amount of money on account
+     * 
+     * @return current balance of account
+     */
+    public double getBalance() {
         return money;
     }
 
@@ -49,15 +57,14 @@ public class Account {
      * @param amount amount to add
      * @return new amount of money on account
      */
-    public long deposit(int amount) {
+    public double deposit(double amount) {
         try {
             saveToFile("DEPOSIT", amount);
+            money += amount;
         } catch (IOException ex) {
-            System.err.println(System.currentTimeMillis() + "\t"
-                    + ex.getMessage() + "\n" + ex.getStackTrace());
+            System.err.println(ex);
         }
-        
-        money += amount;
+
         return money;
     }
 
@@ -67,16 +74,15 @@ public class Account {
      * @param amount amount to withdraw
      * @return new amount of money on account
      */
-    public long withdraw(int amount) {
+    public double withdraw(int amount) {
         if (amount <= money) {
             try {
                 saveToFile("WITHDRAW", amount);
+                money -= amount;
             } catch (IOException ex) {
-            System.err.println(System.currentTimeMillis() + "\t"
-                    + ex.getMessage() + "\n" + ex.getStackTrace());
+                System.err.println(ex);
             }
-            
-            money -= amount;
+
             return money;
         } else {
             throw new IndexOutOfBoundsException("Not enough money on account");
@@ -95,39 +101,33 @@ public class Account {
     private void createFile() throws IOException {
         out = null;
         File outFile = new File(PATH + accountID);
-
-        if (!outFile.exists()) {
-            outFile.createNewFile();
-        }
+        outFile.delete();           //delete previous file and create new
+        outFile.createNewFile();    //each time when we create new instance
 
         out = new FileWriter(outFile, true);
 
         NumberFormat fmt = NumberFormat.getCurrencyInstance();
 
         if (out != null) {
-            out.write("Name: " + name + "\t\t\tAccount ID: " + accountID + "\n\n");
+//            out.write("Name: " + name + "\t\t\tAccount ID: " + accountID + "\n\n");
+            out.write("Account ID: " + accountID + "\n\n");
             out.write("Starting deposit: " + fmt.format(money) + "\n");
         }
 
         out.close();
     }
 
-    private void saveToFile(String type, long amount) throws IOException {
-        out = null;
-        File outFile = new File(PATH + accountID);
-
-        if (!outFile.exists()) {
-            outFile.createNewFile();
-        }
-
-        out = new FileWriter(outFile, true);
-
+    private void saveToFile(String type, double amount) throws IOException {
         NumberFormat fmt = NumberFormat.getCurrencyInstance();
 
         if (out != null) {
-            if (type.equals("DEPOSIT")) {
-                out.write("Added " + fmt.format(amount) + "\t\tCurrent state: "
-                        + fmt.format(getMoney()) + "\n");
+            switch (type) {
+                case "DEPOSIT":
+                    out.write("DEPOSIT:\t\t " + fmt.format(amount));
+                    break;
+                case "WITHDRAW":
+                    out.write("WITHDRAW\t\t:" + fmt.format(amount));
+                    break;
             }
         }
 
