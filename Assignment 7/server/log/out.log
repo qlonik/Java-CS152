@@ -1,2 +1,21 @@
 Inet addr: 0.0.0.0/0.0.0.0	Port: 56848
-Waiting for a client
+Waiting for a new client
+New client from /127.0.0.1:58212
+Waiting for a new client
+[CREATE, 45, 6.]
+CREATING ACC
+Client from /127.0.0.1:58212 disconnected
+New client from /127.0.0.1:58217
+Waiting for a new client
+CREATE:45:6.0
+CREATING ACC
+Client from /127.0.0.1:58217 disconnected
+New client from /127.0.0.1:58229
+Waiting for a new client
+CREATING ACC
+Client from /127.0.0.1:58229 disconnected
+New client from /127.0.0.1:58231
+Waiting for a new client
+[CREATE, 45, 6.0]
+CREATING ACC
+Client from /127.0.0.1:58231 disconnected

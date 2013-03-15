@@ -15,3 +15,8 @@
 build/
 private/
 dist/
+
+# Specific projects files
+Assignment\ 7/server/users/
+Assignment\ 7/server/log/
+Assignment\ 7/client/log/
