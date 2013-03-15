@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -13,131 +14,21 @@ public class Client {
     private Socket s;
     private Scanner input;
     private PrintStream output;
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        //--BEGIN--
-        //setup error log
-        final String ERR_PATH = "./log/error.log";
-        //<editor-fold defaultstate="collapsed" desc="reassign error log to output file">
-        //reassign error log output
-        try {
-            File errFile = new File(ERR_PATH);
-            errFile.createNewFile();
-            System.setErr(new PrintStream(errFile));
-        } catch (IOException ex) {
-            System.err.println("Could not create log file");
-        }
-        //</editor-fold>
-        //--END--
-
-        //--BEGIN--
-        //setup output log
-        final String OUT_PATH = "./log/out.log";
-        //<editor-fold defaultstate="collapsed" desc="reassign output log to file">
-        try {
-            File outFile = new File(OUT_PATH);
-            outFile.createNewFile();
-            System.setOut(new PrintStream(outFile));
-        } catch (IOException ex) {
-            System.err.println("Could not create log file");
-        }
-        //</editor-fold>
-        //--END--
-
-        Scanner kb = new Scanner(System.in);
-
-        final String DEFAULT_IP = "127.0.0.1";
-        final int DEFAULT_PORT = 56848;
-        String ip;      //IP from user
-        int port;       //port from user
-        //<editor-fold defaultstate="collapsed" desc="asking for IP and port">
-        System.out.print("Type hostname or IP adress of the server (default is "
-                + DEFAULT_IP + "): ");
-        ip = kb.nextLine();
-        System.out.println();
-        if (ip == null || ip.equals("")) {
-            System.err.println("Input string is empty. Using default address " + DEFAULT_IP);
-            ip = DEFAULT_IP;
-        }
-
-        try {
-            System.out.print("Type port (default is " + DEFAULT_PORT + "): ");
-            String portString = kb.nextLine();
-            System.out.println();
-            port = Integer.parseInt(portString);
-            if (port < 0 || port > 65535) {
-                System.err.println("Port is out of bound. Using default port " + DEFAULT_PORT);
-                port = DEFAULT_PORT;
-            }
-        } catch (NumberFormatException ex) {
-            System.err.println("Input is not an integer. Using default port " + DEFAULT_PORT);
-            port = DEFAULT_PORT;
-        }
-        //</editor-fold>
-
-        Client client = null;
-        client = new Client(ip, port);
-
-        if (client != null) {
-            String token;
-            do {
-                System.out.print("Write a command (\"h\" for help, \"q\" to quit): ");
-                token = kb.nextLine();
-                System.out.println();
-
-                token = token.trim();
-                String command;
-                if (token.indexOf(" ") > -1) {
-                    command = token.substring(0, token.indexOf(" "));
-                } else {
-                    command = token;
-                }
-
-                try {
-                    switch (command) {
-                        case "h":
-                            client.showHelp();
-                            break;
-                        case "c":
-                            client.createAccount(token);
-                            break;
-                        case "x":
-                            client.deleteAccount(token);
-                            break;
-                        case "d":
-                            client.deposit(token);
-                            break;
-                        case "w":
-                            client.withdraw(token);
-                            break;
-                        case "i":
-                            client.inquire(token);
-                            break;
-                        default:
-                            client.showHelp();
-                            break;
-                    }
-                } catch (NumberFormatException ex) {
-                    System.out.println("Error entering amount. It is not a double");
-                    System.err.println(ex);
-                } catch (IndexOutOfBoundsException ex) {
-                    System.out.println("Wrong number of items in command");
-                    System.err.println(ex);
-                } catch (Exception ex) {
-                    System.err.println(ex);
-                }
-            } while (!token.equals("q"));
-        }
-    }
+    NumberFormat fmt;
 
     public Client(String ip, int port) {
         this.ip = ip;
         this.port = port;
+        
+        fmt = NumberFormat.getCurrencyInstance();
     }
 
+    /**
+     * Since server closes connection each time after answer, we need to
+     * reconnect to it.
+     *
+     * @throws IOException If could not connect to server
+     */
     private void openConnection() throws IOException {
         this.s = new Socket(ip, port);
 
@@ -145,33 +36,6 @@ public class Client {
         input.useDelimiter(";");
 
         this.output = new PrintStream(s.getOutputStream());
-    }
-
-    /*
-     * Receives array list of strings of data in format
-     *      "SUCCESS:<amount>;"
-     *      "FAIL:<fail code>;"
-     */
-    /**
-     * Receives data from server as answer to sent data
-     *
-     * @return array list of received data
-     */
-    private ArrayList<String> receive() {
-        ArrayList<String> data = new ArrayList<>();
-
-        String msg = input.next();
-//        msg = msg.substring(0, msg.length() - 1); //remove ";" after each message
-
-        Scanner scan = new Scanner(msg);
-        scan.useDelimiter(":");
-
-        while (scan.hasNext()) {
-            String piece = scan.next();
-            data.add(piece);
-        }
-
-        return data;
     }
 
     /*
@@ -196,7 +60,35 @@ public class Client {
 
         msg = msg.substring(0, msg.length() - 1) + ";";
 
-        output.println(msg);
+        output.print(msg);
+    }
+
+    /*
+     * Receives array list of strings of data in format
+     *      "SUCCESS:<amount>;"
+     *      "FAIL:<fail code>;"
+     */
+    /**
+     * Receives data from server as answer to sent data
+     *
+     * @return array list of received data
+     */
+    private ArrayList<String> receive() {
+        ArrayList<String> data = new ArrayList<>();
+
+        String msg = input.next();
+        //we do not need it anymore because we use delimeter instead
+//        msg = msg.substring(0, msg.length() - 1); //remove ";" after each message
+
+        Scanner scan = new Scanner(msg);
+        scan.useDelimiter(":");
+
+        while (scan.hasNext()) {
+            String piece = scan.next();
+            data.add(piece);
+        }
+
+        return data;
     }
 
     /**
@@ -267,6 +159,11 @@ public class Client {
         System.out.println("\t\t" + "Returns balance before closing or error "
                 + "(missing account)");
         System.out.println();
+
+        //quit program
+        System.out.println("\t" + "q");
+        System.out.println("\t\t" + "Quits program");
+        System.out.println();
         //--END-- usage
     }
 
@@ -286,9 +183,9 @@ public class Client {
 
         switch (received.get(0)) {
             case "SUCCESS":
-                String receivedAmount = received.get(1);
-                System.out.println("Account with id " + accountID + " successfully"
-                        + " created; starting amount: " + receivedAmount);
+                Double receivedAmount = Double.parseDouble(received.get(1));
+                System.out.println("Account with id #" + accountID + " successfully"
+                        + " created; starting amount: " + fmt.format(receivedAmount));
                 break;
             case "FAIL":
                 int failCode = Integer.parseInt(received.get(1));
@@ -311,8 +208,8 @@ public class Client {
         switch (received.get(0)) {
             case "SUCCESS":
                 String receivedAmount = received.get(1);
-                System.out.println("Account with id " + accountID + " was "
-                        + "successfully deleted; closing amount was " + receivedAmount);
+                System.out.println("Account with id #" + accountID + " was "
+                        + "successfully deleted; closing amount was " + fmt.format(receivedAmount));
                 break;
             case "FAIL":
                 int failCode = Integer.parseInt(received.get(1));
@@ -338,8 +235,8 @@ public class Client {
         switch (received.get(0)) {
             case "SUCCESS":
                 String receivedAmount = received.get(1);
-                System.out.println("Account with id " + accountID + " successfully"
-                        + " reseived amount; now it is: " + receivedAmount);
+                System.out.println("Account with id #" + accountID + " successfully"
+                        + " reseived amount; now it is: " + fmt.format(receivedAmount));
                 break;
             case "FAIL":
                 int failCode = Integer.parseInt(received.get(1));
@@ -365,8 +262,8 @@ public class Client {
         switch (received.get(0)) {
             case "SUCCESS":
                 String receivedAmount = received.get(1);
-                System.out.println("Account with id " + accountID + " successfully"
-                        + " reseived amount; now it is: " + receivedAmount);
+                System.out.println("Account with id #" + accountID + " successfully"
+                        + " reseived amount; now it is: " + fmt.format(receivedAmount));
                 break;
             case "FAIL":
                 int failCode = Integer.parseInt(received.get(1));
@@ -389,14 +286,143 @@ public class Client {
         switch (received.get(0)) {
             case "SUCCESS":
                 String receivedAmount = received.get(1);
-                System.out.println("Account with id " + accountID
+                System.out.println("Account with id #" + accountID
                         + " was successfully deleted; closing amount was "
-                        + receivedAmount);
+                        + fmt.format(receivedAmount));
                 break;
             case "FAIL":
                 int failCode = Integer.parseInt(received.get(1));
                 System.out.println("Account was not deleted. This account id is missing");
                 break;
+        }
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        //--BEGIN--
+        //setup error log
+        final String ERR_PATH = "./log/error.log";
+        //<editor-fold defaultstate="collapsed" desc="reassign error log to output file">
+        //reassign error log output
+        try {
+            File errFile = new File(ERR_PATH);
+            errFile.createNewFile();
+            System.setErr(new PrintStream(errFile));
+        } catch (IOException ex) {
+            System.err.println("Could not create log file");
+        }
+        //</editor-fold>
+        //--END--
+
+        //--BEGIN--
+        //setup output log
+        final String OUT_PATH = "./log/out.log";
+        //<editor-fold defaultstate="collapsed" desc="reassign output log to file">
+        try {
+            File outFile = new File(OUT_PATH);
+            outFile.createNewFile();
+            System.setOut(new PrintStream(outFile));
+        } catch (IOException ex) {
+            System.err.println("Could not create log file");
+        }
+        //</editor-fold>
+        //--END--
+
+        //greetings message
+        System.out.println("This is a system of out HT bank. Please, input first "
+                + "IP and port of the server");
+
+        Scanner kb = new Scanner(System.in);
+
+        final String DEFAULT_IP = "127.0.0.1";
+        final int DEFAULT_PORT = 56848;
+        String ip;      //IP from user
+        int port;       //port from user
+        //<editor-fold defaultstate="collapsed" desc="asking for IP and port">
+        System.out.print("Type hostname or IP adress of the server (default is "
+                + DEFAULT_IP + "): ");
+        ip = kb.nextLine();
+        System.out.println();
+        if (ip == null || ip.equals("")) {
+            System.err.println("Input string is empty. Using default address " + DEFAULT_IP);
+            ip = DEFAULT_IP;
+        }
+
+        try {
+            System.out.print("Type port (default is " + DEFAULT_PORT + "): ");
+            String portString = kb.nextLine();
+            System.out.println();
+            port = Integer.parseInt(portString);
+            if (port < 0 || port > 65535) {
+                System.err.println("Port is out of bound. Using default port " + DEFAULT_PORT);
+                port = DEFAULT_PORT;
+            }
+        } catch (NumberFormatException ex) {
+            System.err.println("Input is not an integer. Using default port " + DEFAULT_PORT);
+            port = DEFAULT_PORT;
+        }
+        //</editor-fold>
+
+        Client client = null;
+        client = new Client(ip, port);
+
+        //greetings message continue
+        System.out.println("Type the command (\"h\" for help, \"q\" to quit)");
+
+        if (client != null) {
+            String token;
+            do {
+                System.out.print("> ");
+                token = kb.nextLine();
+                System.out.println();
+
+                token = token.trim();
+                String command;
+                if (token.indexOf(" ") > -1) {
+                    command = token.substring(0, token.indexOf(" "));
+                } else {
+                    command = token;
+                }
+
+                try {
+                    switch (command) {
+                        case "h":
+                            client.showHelp();
+                            break;
+                        case "c":
+                            client.createAccount(token);
+                            break;
+                        case "x":
+                            client.deleteAccount(token);
+                            break;
+                        case "d":
+                            client.deposit(token);
+                            break;
+                        case "w":
+                            client.withdraw(token);
+                            break;
+                        case "i":
+                            client.inquire(token);
+                            break;
+                        case "q":
+                            //do nothing on q, so we do not show help
+                            break;
+                        default:
+                            client.showHelp();
+                            break;
+                    }
+                } catch (NumberFormatException ex) {
+                    System.out.println("Error entering amount. It is not a double");
+                    System.err.println(ex);
+                } catch (IndexOutOfBoundsException ex) {
+                    System.out.println("Wrong number of items in command");
+                    System.err.println(ex);
+                } catch (Exception ex) {
+                    System.err.println(ex);
+                }
+            } while (!token.equals("q"));
         }
     }
 }
