@@ -5,7 +5,6 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /*
  * Server.java  Nikita Volodin
@@ -16,8 +15,8 @@ import java.util.Scanner;
  */
 public class Server extends Thread {
 
-    Storage storage = new Storage();
-    ArrayList<Connection> connections = new ArrayList<>();
+    AccountStorage storage;
+//    ArrayList<Connection> connections = new ArrayList<>();
     ServerSocket ss = null;
 
     public Server(int port) {
@@ -31,20 +30,41 @@ public class Server extends Thread {
                 + "\tPort: " + ss.getLocalPort());
 
         this.setName("Server");
-        this.start();
+        
+        //storage for all accounts
+        storage = new AccountStorage();
     }
 
+    public boolean createAccount(ArrayList<String> data) {
+        Account acc = new Account(data.get(1), data.get(2));
+        return storage.add(acc);
+    }
+
+    public void deleteAccount() {
+    }
+
+    public void deposit() {
+    }
+
+    public void withdraw() {
+    }
+
+    public void inquire() {
+    }
+
+    /**
+     * Thread of server listener
+     */
     public void run() {
         try {
             while (true) {
-                System.out.println("Waiting for a client");
+                System.out.println("Waiting for a new client");
                 Socket s = ss.accept();
-                System.out.println(System.currentTimeMillis()
-                        + "\tclient from " + s.getInetAddress());
+                System.out.println("New client from " + s.getRemoteSocketAddress());
 
                 Connection conn = new Connection(s, this);
                 conn.start();
-                connections.add(conn);
+//                connections.add(conn);
             }
         } catch (IOException ex) {
             System.err.println(System.currentTimeMillis() + "\t"
@@ -108,5 +128,6 @@ public class Server extends Thread {
 
         int port = DEFAULT_PORT;
         Server server = new Server(port);
+        server.start();
     }
 }
