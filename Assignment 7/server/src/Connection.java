@@ -25,47 +25,6 @@ public class Connection extends Thread {
         this.parent = parent;
     }
 
-    @Override
-    public void run() {
-        try {
-            ArrayList<String> data = receive();
-
-            while (!data.get(0).equals("CLOSE")) {
-                String command = data.get(0);
-
-                switch (command) {
-                    case "CREATE":
-                        System.out.println("CREATING ACC");
-                        //create new account
-                        break;
-                    case "DELETE":
-                        //delete account
-                        break;
-                    case "DEPOSIT":
-                        //deposit amount to account
-                        break;
-                    case "WITHDRAW":
-                        //withdraw amount from account
-                        break;
-                    case "INQUIRE":
-                        //send amount on account
-                        break;
-                    default:
-                        //command does not exist message
-                        break;
-                }
-                command = null;
-            }
-
-            s.close();
-            System.out.println("Client disconnected");
-        } catch (IOException ex) {
-            System.err.println(System.currentTimeMillis() + "\t" + ex);
-        } catch (Exception ex) {
-            System.err.println(System.currentTimeMillis() + "\t" + ex);
-        }
-    }
-
     /**
      * Receives data from server as answer to sent data
      *
@@ -74,8 +33,9 @@ public class Connection extends Thread {
     private ArrayList<String> receive() {
         ArrayList<String> data = new ArrayList<>();
 
-        String msg = input.nextLine();
-        msg = msg.substring(0, msg.length() - 1);
+        String msg = input.next();
+        //we do not need it anymore because we use delimeter instead
+//        msg = msg.substring(0, msg.length() - 1); //cut last ";" in message
 
         Scanner scan = new Scanner(msg);
         scan.useDelimiter(":");
@@ -93,7 +53,7 @@ public class Connection extends Thread {
      *
      * @param data array list of data to send
      */
-    public void send(ArrayList<String> data) {
+    private void send(ArrayList<String> data) {
         String msg = "";
 
         for (int i = 0; i < data.size(); i++) {
@@ -102,6 +62,84 @@ public class Connection extends Thread {
 
         msg = msg.substring(0, msg.length() - 1) + ";";
 
-        output.println(msg);
+        output.print(msg);
+    }
+
+    private void createAccount(ArrayList<String> data) {
+        ArrayList<String> toSend = new ArrayList<>();
+
+        if (parent.createAccount(data)) {
+            toSend.add("SUCCESS");
+            toSend.add(data.get(2));
+        } else {
+            toSend.add("FAIL");
+            toSend.add("2");
+        }
+
+        send(toSend);
+    }
+
+    private void deleteAccount(ArrayList<String> data) {
+//        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private void deposit(ArrayList<String> data) {
+//        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private void withdraw(ArrayList<String> data) {
+//        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private void inquire(ArrayList<String> data) {
+//        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
+    public void run() {
+        try {
+            ArrayList<String> data = receive();
+
+            String command = data.get(0);
+            ArrayList<String> toSend = null;
+
+            switch (command) {
+                case "CREATE":
+                    System.out.println("CREATING ACC");
+                    createAccount(data);
+                    //create new account
+                    break;
+                case "DELETE":
+                    System.out.println("DELETING ACC");
+                    deleteAccount(data);
+                    //delete account
+                    break;
+                case "DEPOSIT":
+                    System.out.println("DEPOSITING MONEY");
+                    deposit(data);
+                    //deposit amount to account
+                    break;
+                case "WITHDRAW":
+                    System.out.println("WITHDRAWING MONEY");
+                    withdraw(data);
+                    //withdraw amount from account
+                    break;
+                case "INQUIRE":
+                    System.out.println("INQUIRING");
+                    inquire(data);
+                    //send amount on account
+                    break;
+                default:
+                    //command does not exist message
+                    break;
+            }
+
+            s.close();
+            System.out.println("Client from " + s.getRemoteSocketAddress() + " disconnected");
+        } catch (IOException ex) {
+            System.err.println(System.currentTimeMillis() + "\t" + ex);
+        } catch (Exception ex) {
+            System.err.println(System.currentTimeMillis() + "\t" + ex);
+        }
     }
 }
