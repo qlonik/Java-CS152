@@ -3,11 +3,65 @@ Type hostname or IP adress of the server (default is 127.0.0.1):
 Type port (default is 56848): 
 Type the command ("h" for help, "q" to quit)
 > 
-Account with id #45 successfully created; starting amount: $6.00
+Current balance in account ID#23 is $51.00
 > 
-Account with id #45 successfully created; starting amount: $6.00
+Could not receive current balance in account ID#22. This account does not exist.
 > 
-Account with id #45 successfully created; starting amount: $6.00
+Wrong number of items in command
 > 
-Account with id #45 successfully created; starting amount: $6.00
+Account ID#22 successfully created. Starting balance: $21.00
+> 
+exception on line 441
+> 
+You successfully withdraw from account ID#24. Now you have $23.00
+> 
+Account ID#24; amount successfully received. Current balance: $25.00
+> 
+Client for bank system
+
+Usage: 
+	c <accound id> <starting balance>
+		Creates new account with specified id and starting balance
+		Returns starting balance if created right or return error (account number is in use)
+
+	d <account id> <amount>
+		Adds amount to balance
+		At success returns new balance or error (missing account)
+
+	i <account id>
+		Current balance
+		At success returns amount on the account or error (missing account)
+
+	w <account id> <amount>
+		Withdraw amount from account
+		At success returns new balance or error (missing account; insufficient funds)
+
+	x <account id>
+		Deletes account with specified id
+		Returns balance before closing or error (missing account)
+
+	q
+		Quits program
+
+> 
+Current balance in account ID#24 is $25.00
+> count id>
+		Current balance
+		At success returns amount on the account or error (missing account)
+
+	w <account id> <amount>
+		Withdraw amount from account
+		At success returns new balance or error (missing account; insufficient funds)
+
+	x <account id>
+		Deletes account with specified id
+		Returns balance before closing or error (missing account)
+
+	q
+		Quits program
+
+> 
+You successfully withdraw from account ID#24. Now you have $0.00
+> 
+Current balance in account ID#24 is $25.00
 > 

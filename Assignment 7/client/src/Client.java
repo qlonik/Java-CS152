@@ -19,7 +19,7 @@ public class Client {
     public Client(String ip, int port) {
         this.ip = ip;
         this.port = port;
-        
+
         fmt = NumberFormat.getCurrencyInstance();
     }
 
@@ -184,12 +184,16 @@ public class Client {
         switch (received.get(0)) {
             case "SUCCESS":
                 Double receivedAmount = Double.parseDouble(received.get(1));
-                System.out.println("Account with id #" + accountID + " successfully"
-                        + " created; starting amount: " + fmt.format(receivedAmount));
+                System.out.println("Account ID#" + accountID + " successfully"
+                        + " created. Starting balance: " + fmt.format(receivedAmount));
                 break;
+
             case "FAIL":
                 int failCode = Integer.parseInt(received.get(1));
-                System.out.println("Account was not created. Current account id is in use");
+                if (failCode == 2) {
+                    System.out.println("Account ID#" + data.get(1)
+                            + " was not created. Current account ID is in use");
+                }
                 break;
         }
     }
@@ -207,13 +211,18 @@ public class Client {
 
         switch (received.get(0)) {
             case "SUCCESS":
-                String receivedAmount = received.get(1);
-                System.out.println("Account with id #" + accountID + " was "
-                        + "successfully deleted; closing amount was " + fmt.format(receivedAmount));
+                Double receivedAmount = Double.parseDouble(received.get(1));
+                System.out.println("Account ID#" + accountID
+                        + " was successfully deleted. Closing balance: "
+                        + fmt.format(receivedAmount));
                 break;
+
             case "FAIL":
                 int failCode = Integer.parseInt(received.get(1));
-                System.out.println("Account was not deleted. This account id is missing");
+                if (failCode == 1) {
+                    System.out.println("Account ID#" + accountID
+                            + " was not deleted. This account does not exist");
+                }
                 break;
         }
     }
@@ -234,13 +243,18 @@ public class Client {
 
         switch (received.get(0)) {
             case "SUCCESS":
-                String receivedAmount = received.get(1);
-                System.out.println("Account with id #" + accountID + " successfully"
-                        + " reseived amount; now it is: " + fmt.format(receivedAmount));
+                Double receivedAmount = Double.parseDouble(received.get(1));
+                System.out.println("Account ID#" + accountID + "; amount"
+                        + " successfully received. Current balance: "
+                        + fmt.format(receivedAmount));
                 break;
+
             case "FAIL":
                 int failCode = Integer.parseInt(received.get(1));
-                System.out.println("Account was not created. Current account id is in use");
+                if (failCode == 1) {
+                    System.out.println("Account ID#" + accountID + " did not receive "
+                            + "deposit. Current account does not exist.");
+                }
                 break;
         }
     }
@@ -261,13 +275,20 @@ public class Client {
 
         switch (received.get(0)) {
             case "SUCCESS":
-                String receivedAmount = received.get(1);
-                System.out.println("Account with id #" + accountID + " successfully"
-                        + " reseived amount; now it is: " + fmt.format(receivedAmount));
+                Double receivedAmount = Double.parseDouble(received.get(1));
+                System.out.println("You successfully withdraw from account ID#"
+                        + accountID + ". Now you have " + fmt.format(receivedAmount));
                 break;
+
             case "FAIL":
                 int failCode = Integer.parseInt(received.get(1));
-                System.out.println("Account was not created. Current account id is in use");
+                if (failCode == 1) {
+                    System.out.println("Could not withdraw from account ID#" + accountID
+                            + ". This account does not exist.");
+                } else if (failCode == 3) {
+                    System.out.println("Could not withdraw from account ID#" + accountID
+                            + ". This account does not have enough money.");
+                }
                 break;
         }
     }
@@ -285,14 +306,17 @@ public class Client {
 
         switch (received.get(0)) {
             case "SUCCESS":
-                String receivedAmount = received.get(1);
-                System.out.println("Account with id #" + accountID
-                        + " was successfully deleted; closing amount was "
-                        + fmt.format(receivedAmount));
+                Double receivedAmount = Double.parseDouble(received.get(1));
+                System.out.println("Current balance of account ID#" + accountID
+                        + " is " + fmt.format(receivedAmount));
                 break;
+
             case "FAIL":
                 int failCode = Integer.parseInt(received.get(1));
-                System.out.println("Account was not deleted. This account id is missing");
+                if (failCode == 1) {
+                    System.out.println("Could not receive current balance of account "
+                            + "ID#" + accountID + ". This account does not exist.");
+                }
                 break;
         }
     }
@@ -391,24 +415,31 @@ public class Client {
                         case "h":
                             client.showHelp();
                             break;
+
                         case "c":
                             client.createAccount(token);
                             break;
+
                         case "x":
                             client.deleteAccount(token);
                             break;
+
                         case "d":
                             client.deposit(token);
                             break;
+
                         case "w":
                             client.withdraw(token);
                             break;
+
                         case "i":
                             client.inquire(token);
                             break;
+
                         case "q":
                             //do nothing on q, so we do not show help
                             break;
+
                         default:
                             client.showHelp();
                             break;
@@ -420,6 +451,7 @@ public class Client {
                     System.out.println("Wrong number of items in command");
                     System.err.println(ex);
                 } catch (Exception ex) {
+                    System.out.println("exception on line 454");
                     System.err.println(ex);
                 }
             } while (!token.equals("q"));
