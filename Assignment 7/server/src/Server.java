@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /*
  * Server.java  Nikita Volodin
@@ -30,26 +32,58 @@ public class Server extends Thread {
                 + "\tPort: " + ss.getLocalPort());
 
         this.setName("Server");
-        
+
         //storage for all accounts
         storage = new AccountStorage();
     }
 
-    public boolean createAccount(ArrayList<String> data) {
-        Account acc = new Account(data.get(1), data.get(2));
-        return storage.add(acc);
+    /**
+     * Current time in format "dd MMM yyyy HH:mm:ss"
+     *
+     * @return String representation of current time
+     */
+    public String getTime() {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
+
+        return sdf.format(cal.getTime());
     }
 
-    public void deleteAccount() {
+    /*
+     * These methods are accessed from connection class and they ask (storage class to
+     * do stuff) and transfer (result from storage class to connection class)
+     */
+    public Account createAccount(ArrayList<String> data) {
+        int id = Integer.parseInt(data.get(1));
+        double amount = Double.parseDouble(data.get(2));
+
+        return storage.create(id, amount);
     }
 
-    public void deposit() {
+    public Account deleteAccount(ArrayList<String> data) {
+        int id = Integer.parseInt(data.get(1));
+
+        return storage.delete(id);
     }
 
-    public void withdraw() {
+    public Account deposit(ArrayList<String> data) {
+        int id = Integer.parseInt(data.get(1));
+        double amount = Double.parseDouble(data.get(2));
+
+        return storage.deposit(id, amount);
     }
 
-    public void inquire() {
+    public Object[] withdraw(ArrayList<String> data) {
+        int id = Integer.parseInt(data.get(1));
+        double amount = Double.parseDouble(data.get(2));
+
+        return storage.withdraw(id, amount);
+    }
+
+    public Account inquire(ArrayList<String> data) {
+        int id = Integer.parseInt(data.get(1));
+
+        return storage.inquire(id);
     }
 
     /**
@@ -67,8 +101,7 @@ public class Server extends Thread {
 //                connections.add(conn);
             }
         } catch (IOException ex) {
-            System.err.println(System.currentTimeMillis() + "\t"
-                    + ex.getMessage() + "\n" + ex.getStackTrace());
+            System.err.println(getTime() + "\t" + ex);
         }
     }
 
