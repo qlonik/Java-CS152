@@ -1,0 +1,26 @@
+Protocol description for assignment 7
+
+Client establish connection only when he wants to send some data and after receiving
+it from server, server closes connection.
+
+Available options
+	description	command			client send
+
+	create new 	c <account id> <amount>	CREATE:<account id>:<amount>;
+	delete account	x <account id>		DELETE:<account id>;
+	deposit		d <account id> <amount>	DEPOSIT:<account id>:<amount>;
+	withdraw	w <account id> <amount> WITHDRAW:<account id>:<amount>;
+	inquire		i <account id>		INQUIRE:<account id>; 
+
+Server responses
+	description	server send
+
+	success		SUCCESS:<amount>;
+	fail		FAIL:<fail code>;
+
+Fail codes
+	number		description
+
+	1		account does not exist
+	2		existing account
+	3		insufficient funds
