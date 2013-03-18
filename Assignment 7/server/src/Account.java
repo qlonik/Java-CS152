@@ -15,10 +15,10 @@ import java.util.Calendar;
 public class Account {
 
     final private String PATH = "./users/";
-    File outFile = null;
+    private File outFile = null;
     private FileWriter out = null;
     private int accountID = 0;
-    private double money = 0;
+    private double money = -1;
 
     public Account(int account, double startingDeposit) {
         accountID = account;
@@ -27,13 +27,16 @@ public class Account {
         try {
             createFile();
         } catch (IOException ex) {
-            System.out.println("Could not create file for account #" + accountID);
+            System.out.println(getTime() + "\tCould not create file for account #" + accountID);
             System.err.println(ex);
         }
     }
 
-    public Account(String account, String startingDeposit) {
-        this(Integer.parseInt(account), Double.parseDouble(startingDeposit));
+    private String getTime() {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
+        
+        return sdf.format(cal.getTime());
     }
 
     /**
@@ -43,13 +46,6 @@ public class Account {
      */
     public int getAccountID() {
         return accountID;
-    }
-
-    private String getTime() {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
-        
-        return sdf.format(cal.getTime());
     }
 
     /**
@@ -99,7 +95,7 @@ public class Account {
         }
     }
 
-    public void deleteAccount() {
+    public synchronized void deleteAccount() {
         outFile.delete();
     }
 
