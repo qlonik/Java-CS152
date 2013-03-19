@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Scanner;
 
 /*
  * Server.java  Nikita Volodin
@@ -49,41 +50,223 @@ public class Server extends Thread {
         return sdf.format(cal.getTime());
     }
 
-    /*
-     * These methods are accessed from connection class and they ask (storage class to
-     * do stuff) and transfer (result from storage class to connection class)
+    /**
+     *
+     * @param msg Message from client
+     * @return Server's reaction to this input
      */
-    public Account createAccount(ArrayList<String> data) {
-        int id = Integer.parseInt(data.get(1));
-        double amount = Double.parseDouble(data.get(2));
+    public String parseMsg(String msg) {
+        ArrayList<String> receivedData = decode(msg);
+        ArrayList<String> sendingData = new ArrayList<>();
 
-        return storage.create(id, amount);
+        String command = receivedData.get(0);
+        int ID = Integer.parseInt(receivedData.get(1));
+        double balance;
+
+        switch (command) {
+            case "CREATE":
+                //create new account
+                System.out.print(getTime() + "\tCREATING ACCOUNT ID#" + ID + "\t\t");
+
+                balance = Double.parseDouble(receivedData.get(2));
+                sendingData = createAccount(ID, balance);
+
+                if (sendingData.get(0).equals("SUCCESS")) {
+                    System.out.println("Successful operation");
+                } else {
+                    System.out.println("Failed to create. "
+                            + "This account number already exist");
+                }
+                break;
+
+            case "DELETE":
+                //delete account
+                System.out.print(getTime() + "\tDELETING ACCOUNT ID#"
+                        + ID + "\t\t");
+
+                sendingData = deleteAccount(ID);
+
+                if (sendingData.get(0).equals("SUCCESS")) {
+                    System.out.println("Successful operation");
+                } else {
+                    System.out.println("Failed to delete. "
+                            + "This account does not exist");
+                }
+                break;
+
+            case "DEPOSIT":
+                //deposit amount to account
+                System.out.print(getTime() + "\tDEPOSITING TO ACCOUNT ID#"
+                        + ID + "\t\t");
+
+                balance = Double.parseDouble(receivedData.get(2));
+                sendingData = deposit(ID, balance);
+
+                if (sendingData.get(0).equals("SUCCESS")) {
+                    System.out.println("Successful operation");
+                } else {
+                    System.out.println("Failed to deposit. "
+                            + "This account does not exist");
+                }
+                break;
+
+            case "WITHDRAW":
+                //withdraw amount from account
+                System.out.print(getTime() + "\tWITHDRAWING FROM ACCOUNT ID#"
+                        + ID + "\t\t");
+
+                balance = Double.parseDouble(receivedData.get(2));
+                sendingData = withdraw(ID, balance);
+
+                if (sendingData.get(0).equals("SUCCESS")) {
+                    System.out.println("Successful operation");
+                } else if (sendingData.get(1).equals("3")) {
+                    System.out.println("Failed to withdraw. "
+                            + "This account does not have enough funds");
+                } else {
+                    System.out.println("Failed to withdraw. "
+                            + "This account does not exist");
+                }
+                break;
+
+            case "INQUIRE":
+                //inquire amount on account
+                System.out.print(getTime() + "\tINQUIRING ACCOUNT ID#"
+                        + ID + "\t\t");
+
+
+                sendingData = inquire(ID);
+
+                if (sendingData.get(0).equals("SUCCESS")) {
+                    System.out.println("Successful operation");
+                } else {
+                    System.out.println("Failed to inquire. "
+                            + "This account does not exist");
+                }
+                break;
+        }
+
+        return encode(sendingData);
     }
 
-    public Account deleteAccount(ArrayList<String> data) {
-        int id = Integer.parseInt(data.get(1));
+    /**
+     * Decode from input string to Array List of parameters according to
+     * protocol
+     *
+     * @param msg Input String from user
+     * @return ArrayList of Strings with command and parameters
+     */
+    private ArrayList<String> decode(String msg) {
+        ArrayList<String> data = new ArrayList<>();
 
-        return storage.delete(id);
+        Scanner scan = new Scanner(msg);
+        scan.useDelimiter(":");
+
+        while (scan.hasNext()) {
+            String piece = scan.next();
+            data.add(piece);
+        }
+
+        return data;
     }
 
-    public Account deposit(ArrayList<String> data) {
-        int id = Integer.parseInt(data.get(1));
-        double amount = Double.parseDouble(data.get(2));
+    /**
+     * Encode server's react to a single String to send to client
+     *
+     * @param data ArrayList with answer from server
+     * @return Encoded line for client
+     */
+    private String encode(ArrayList<String> data) {
+        String msg = "";
 
-        return storage.deposit(id, amount);
+        if (data != null) {
+            for (int i = 0; i < data.size(); i++) {
+                msg += data.get(i) + ":";
+            }
+
+            msg = msg.substring(0, msg.length() - 1) + ";"; //cut last colon and add semicolon to the end
+        }
+
+        return msg;
     }
 
-    public Object[] withdraw(ArrayList<String> data) {
-        int id = Integer.parseInt(data.get(1));
-        double amount = Double.parseDouble(data.get(2));
+    private ArrayList<String> createAccount(int ID, double amount) {
+        ArrayList<String> result = new ArrayList<>();
 
-        return storage.withdraw(id, amount);
+        Double createdBalance = storage.create(ID, amount);
+        if (createdBalance != null) {
+            result.add("SUCCESS");
+            result.add("" + createdBalance);
+        } else {
+            result.add("FAIL");
+            result.add("2"); //code of "Existing account" error
+        }
+
+        return result;
     }
 
-    public Account inquire(ArrayList<String> data) {
-        int id = Integer.parseInt(data.get(1));
+    private ArrayList<String> deleteAccount(int ID) {
+        ArrayList<String> result = new ArrayList<>();
 
-        return storage.inquire(id);
+        Double deletedBalance = storage.delete(ID);
+        if (deletedBalance != null) {
+            result.add("SUCCESS");
+            result.add("" + deletedBalance);
+        } else {
+            result.add("FAIL");
+            result.add("1"); //code of "Account does not exist" error
+        }
+
+        return result;
+    }
+
+    private ArrayList<String> deposit(int ID, double amount) {
+        ArrayList<String> result = new ArrayList<>();
+
+        Double depositedBalance = storage.deposit(ID, amount);
+        if (depositedBalance != null) {
+            result.add("SUCCESS");
+            result.add("" + depositedBalance);
+        } else {
+            result.add("FAIL");
+            result.add("1"); //code of "Account does not exist" error
+        }
+
+        return result;
+    }
+
+    private ArrayList<String> withdraw(int ID, double amount) {
+        ArrayList<String> result = new ArrayList<>();
+
+        Double withdrawingBalance = storage.withdraw(ID, amount);
+        if (withdrawingBalance != null && withdrawingBalance != -1) {
+            result.add("SUCCESS");
+            result.add("" + withdrawingBalance);
+        } else if (withdrawingBalance == -1) {
+            result.add("FAIL");
+            result.add("3"); //code of "Insufficient funds" error
+
+        } else {
+            result.add("FAIL");
+            result.add("1"); //code of "Account does not exist" error
+        }
+
+        return result;
+    }
+
+    private ArrayList<String> inquire(int ID) {
+        ArrayList<String> result = new ArrayList<>();
+
+        Double inquiredBalance = storage.inquire(ID);
+        if (inquiredBalance != null) {
+            result.add("SUCCESS");
+            result.add("" + inquiredBalance);
+        } else {
+            result.add("FAIL");
+            result.add("1"); //code of "Account does not exist" error
+        }
+
+        return result;
     }
 
     /**
