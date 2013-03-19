@@ -76,6 +76,7 @@ public class Account {
 
     /**
      * Withdraw money from account
+     * "-1" means that account has insufficient funds
      *
      * @param amount amount to withdraw
      * @return new amount of money on account
@@ -91,12 +92,19 @@ public class Account {
 
             return money;
         } else {
-            throw new IndexOutOfBoundsException("Not enough money on account");
+            return -1;
         }
     }
 
-    public synchronized void deleteAccount() {
+    /**
+     * Deletes account
+     * 
+     * @return Amount of money before deleting
+     */
+    public synchronized double deleteAccount() {
         outFile.delete();
+        
+        return money;
     }
 
     private void createFile() throws IOException {
