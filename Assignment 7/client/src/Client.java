@@ -14,7 +14,7 @@ public class Client {
     private Socket s;
     private Scanner input;
     private PrintStream output;
-    NumberFormat fmt;
+    private NumberFormat fmt;
 
     public Client(String ip, int port) {
         this.ip = ip;
@@ -77,8 +77,6 @@ public class Client {
         ArrayList<String> data = new ArrayList<>();
 
         String msg = input.next();
-        //we do not need it anymore because we use delimeter instead
-//        msg = msg.substring(0, msg.length() - 1); //remove ";" after each message
 
         Scanner scan = new Scanner(msg);
         scan.useDelimiter(":");
@@ -107,9 +105,7 @@ public class Client {
 
         send(data);
 
-        ArrayList<String> received = receive();
-
-        return received;
+        return receive();
     }
 
     /**
@@ -389,8 +385,7 @@ public class Client {
         }
         //</editor-fold>
 
-        Client client = null;
-        client = new Client(ip, port);
+        Client client = new Client(ip, port);
 
         //greetings message continue
         System.out.println("Type the command (\"h\" for help, \"q\" to quit)");
@@ -449,9 +444,6 @@ public class Client {
                     System.err.println(ex);
                 } catch (IndexOutOfBoundsException ex) {
                     System.out.println("Wrong number of items in command");
-                    System.err.println(ex);
-                } catch (Exception ex) {
-                    System.out.println("exception on line 454");
                     System.err.println(ex);
                 }
             } while (!token.equals("q"));
