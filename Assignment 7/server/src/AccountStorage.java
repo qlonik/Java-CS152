@@ -11,97 +11,72 @@ public class AccountStorage extends ArrayList<Account> {
         super();
     }
 
-    /*
-     * These operational methods do stuff with particular Account objects
-     * and they return result.
-     * Result is usually account object if all good,
-     * or null or false if all bad.
-     */
-    /**
-     * Adds account to storage if there is no account with same accountID
-     *
-     * @param e Account that we want to add to storage
-     * @return True if successfully added. False otherwise
-     */
-    public Account create(int accountID, double amount) {
-        Account result = find(accountID);
+    public synchronized Double create(int accountID, double amount) {
+        Double newBalance = null;
 
-        if (result == null) {
+        if (find(accountID) == null) { //if we did not find anything with this ID
             Account newAccount = new Account(accountID, amount);
             super.add(newAccount);
 
-            result = newAccount;
-        } else { //if it found something we need to get rid of it and not pass everywhere else
-            result = null;
+             // if we created account then we will save money it has
+            newBalance = newAccount.getBalance();
         }
 
-        return result;
+        return newBalance;
     }
 
-    public Account delete(int accountID) {
-        Account result = find(accountID);
+    public synchronized Double delete(int accountID) {
+        Double deletingBalance = null;
 
-        if (result != null) {
-            result.deleteAccount();
-            super.remove(result);
+        Account deletingAccount = find(accountID);
+        if (deletingAccount != null) { //if we found anything, then it is the account we need to delete
+            deletingBalance = deletingAccount.deleteAccount();
+            super.remove(deletingAccount);
         }
 
-        return result;
+        return deletingBalance;
     }
 
-    public Account deposit(int accountID, double amount) {
-        Account result = find(accountID);
+    public Double deposit(int accountID, double amount) {
+        Double depositedBalance = null;
 
-        if (result != null) {
-            result.deposit(amount);
+        Account depositedAccount = find(accountID);
+        if (depositedAccount != null) {
+            depositedBalance = depositedAccount.deposit(amount);
         }
 
-        return result;
+        return depositedBalance;
     }
 
-    /*
-     * #TODO REDO THIS BLOODY SHIT
-     * Returns array of two objects: boolean and account
-     * 
-     * if account is null then it does not exist
-     * if boolean is true then we do not have enough money
-     */
-    public Object[] withdraw(int accountID, double amount) {
-        Object[] result = new Object[2]; //first item is a boolean, second is an Account obj
+    public Double withdraw(int accountID, double amount) {
+        Double withdrawingBalance = null;
 
-        boolean moneyLack = false;
-        Account found = find(accountID);
-
-        if (found != null) {
-            try {
-                found.withdraw(amount);
-            } catch (IndexOutOfBoundsException ex) {
-                moneyLack = true;
-            }
+        Account withdrawingAccount = find(accountID);
+        if (withdrawingAccount != null) {
+            withdrawingBalance = withdrawingAccount.withdraw(amount);
         }
 
-        result[0] = moneyLack;
-        result[1] = found;
-        return result;
+        return withdrawingBalance;
     }
 
-    public Account inquire(int accountID) {
-        Account result = find(accountID);
+    public Double inquire(int accountID) {
+        Double inquiringBalance = null;
 
-        return result;
+        Account inquiredAccount = find(accountID);
+        if (inquiredAccount != null) {
+            inquiringBalance = inquiredAccount.getBalance();
+        }
+
+        return inquiringBalance;
     }
 
-    /*
-     * Added synchronized modifier so no any different threads 
-     * will search in this arraylist at the same time
-     */
     /**
      * Returns first found position of account with id accountID
      *
      * @param accountID accountID we want to find
      * @return Account if we found it, or null if not
      */
-    private synchronized Account find(int accountID) {
+    private Account find(int accountID) {
         Account result = null;
 
         int i = 0;
