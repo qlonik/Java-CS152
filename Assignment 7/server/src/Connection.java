@@ -32,12 +32,10 @@ public class Connection extends Thread {
             output.print(sendingMsg);
 
             s.close();
-            System.out.println(parent.getTime() + "\tCLIENT "
-                    + s.getRemoteSocketAddress() + " was disconnected");
         } catch (IOException ex) {
-            System.out.println(parent.getTime() + " Could not disconnect "
+            System.out.println(Server.getTime() + " Could not disconnect "
                     + "client from" + s.getRemoteSocketAddress());
-            System.err.println(parent.getTime() + "\t[EX] " + ex);
+            System.err.println(Server.getTime() + "\t[EX] " + ex);
         }
     }
 }

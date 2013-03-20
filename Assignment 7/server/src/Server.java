@@ -19,14 +19,13 @@ import java.util.Scanner;
 public class Server extends Thread {
 
     AccountStorage storage;
-//    ArrayList<Connection> connections = new ArrayList<>();
     ServerSocket ss = null;
 
     public Server(int port) {
         try {
             ss = new ServerSocket(port);
         } catch (IOException ex) {
-            System.err.println(System.currentTimeMillis() + "\t" + ex);
+            System.err.println(getTime() + "\t" + ex);
         }
 
         System.out.println("Inet addr: " + ss.getInetAddress()
@@ -43,7 +42,7 @@ public class Server extends Thread {
      *
      * @return String representation of current time
      */
-    public String getTime() {
+    public static String getTime() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
 
@@ -272,16 +271,15 @@ public class Server extends Thread {
     /**
      * Thread of server listener
      */
+    @Override
     public void run() {
         try {
+            System.out.println("Waiting for a clients");
             while (true) {
-                System.out.println("Waiting for a new client");
                 Socket s = ss.accept();
-                System.out.println("New client from " + s.getRemoteSocketAddress());
 
                 Connection conn = new Connection(s, this);
                 conn.start();
-//                connections.add(conn);
             }
         } catch (IOException ex) {
             System.err.println(getTime() + "\t" + ex);
