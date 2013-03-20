@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Client {
@@ -38,14 +39,6 @@ public class Client {
         this.output = new PrintStream(s.getOutputStream());
     }
 
-    /*
-     * Sends data converted to a line in format:
-     *      "CREATE:<account id>;"
-     *      "DELETE:<account id>;"
-     *      "DEPOSIT:<account id>:<amount>;"
-     *      "WITHDRAW:<account id>:<amount>;"
-     *      "INQUIRE:<account id>;"
-     */
     /**
      * Sends data to server
      *
@@ -63,11 +56,6 @@ public class Client {
         output.print(msg);
     }
 
-    /*
-     * Receives array list of strings of data in format
-     *      "SUCCESS:<amount>;"
-     *      "FAIL:<fail code>;"
-     */
     /**
      * Receives data from server as answer to sent data
      *
@@ -163,12 +151,20 @@ public class Client {
         //--END-- usage
     }
 
-    private void createAccount(String token) throws NumberFormatException {
+    private void createAccount(String token) {
         token = token.substring(token.indexOf(" ") + 1); //remove command character
+        Scanner tokenScanner = new Scanner(token);
 
-        String accountID = token.substring(0, token.indexOf(" ")); //from beginning to first space
-        String amount = token.substring(token.indexOf(" ") + 1); //from space to the end
-        amount = Double.toString(Double.parseDouble(amount)); //checking if it is double
+        String accountID = tokenScanner.next(); //read first token
+        accountID = Integer.toString(Integer.parseInt(accountID)); //check if it is int
+
+        String amount = tokenScanner.next(); //read second token
+        Double enteredAmount = Double.parseDouble(amount);  //check if it is double
+        if (enteredAmount < 0) { //check if it is positive
+            throw new NumberFormatException("You cannot enter negative numbers");
+        }
+        amount = Double.toString(enteredAmount);
+        //skip everything that left
 
         ArrayList<String> data = new ArrayList<>();
         data.add("CREATE");     //command to server to create account
@@ -196,8 +192,11 @@ public class Client {
 
     private void deleteAccount(String token) {
         token = token.substring(token.indexOf(" ") + 1); //remove command character
+        Scanner tokenScanner = new Scanner(token);
 
-        String accountID = token; //only account id left
+        String accountID = tokenScanner.next(); //read first token
+        accountID = Integer.toString(Integer.parseInt(accountID)); //check if it is int
+        //skip everything that left
 
         ArrayList<String> data = new ArrayList<>();
         data.add("DELETE");
@@ -223,12 +222,20 @@ public class Client {
         }
     }
 
-    private void deposit(String token) throws NumberFormatException {
+    private void deposit(String token) {
         token = token.substring(token.indexOf(" ") + 1); //remove command character
+        Scanner tokenScanner = new Scanner(token);
 
-        String accountID = token.substring(0, token.indexOf(" ")); //from beginning to first space
-        String amount = token.substring(token.indexOf(" ") + 1); //from space to the end
-        amount = Double.toString(Double.parseDouble(amount)); //checking if it is double
+        String accountID = tokenScanner.next(); //read first token
+        accountID = Integer.toString(Integer.parseInt(accountID)); //check if it is int
+
+        String amount = tokenScanner.next(); //read second token
+        Double enteredAmount = Double.parseDouble(amount);  //check if it is double
+        if (enteredAmount < 0) { //check if it is positive
+            throw new NumberFormatException("You cannot enter negative numbers");
+        }
+        amount = Double.toString(enteredAmount);
+        //skip everything that left
 
         ArrayList<String> data = new ArrayList<>();
         data.add("DEPOSIT");     //command to server to create account
@@ -255,12 +262,20 @@ public class Client {
         }
     }
 
-    private void withdraw(String token) throws NumberFormatException {
-        token = token.substring(token.indexOf(" ") + 1); //remove command character
+    private void withdraw(String token) {
+        token = token.substring(token.indexOf(" ") + 1); //remove command character        
+        Scanner tokenScanner = new Scanner(token);
 
-        String accountID = token.substring(0, token.indexOf(" ")); //from beginning to first space
-        String amount = token.substring(token.indexOf(" ") + 1); //from space to the end
-        amount = Double.toString(Double.parseDouble(amount)); //checking if it is double
+        String accountID = tokenScanner.next(); //read first token
+        accountID = Integer.toString(Integer.parseInt(accountID)); //check if it is int
+        
+        String amount = tokenScanner.next(); //read second token
+        Double enteredAmount = Double.parseDouble(amount);  //check if it is double
+        if (enteredAmount < 0) { //check if it is positive
+            throw new NumberFormatException("You cannot enter negative numbers");
+        }
+        amount = Double.toString(enteredAmount);
+        //skip everything that left
 
         ArrayList<String> data = new ArrayList<>();
         data.add("WITHDRAW");     //command to server to create account
@@ -291,8 +306,11 @@ public class Client {
 
     private void inquire(String token) {
         token = token.substring(token.indexOf(" ") + 1); //remove command character
+        Scanner tokenScanner = new Scanner(token);
 
-        String accountID = token; //only account id left
+        String accountID = tokenScanner.next(); //read first token
+        accountID = Integer.toString(Integer.parseInt(accountID)); //check if it is int
+        //skip everything that left
 
         ArrayList<String> data = new ArrayList<>();
         data.add("INQUIRE");
@@ -331,24 +349,24 @@ public class Client {
             errFile.createNewFile();
             System.setErr(new PrintStream(errFile));
         } catch (IOException ex) {
-            System.err.println("Could not create log file");
+            System.err.println("Could not create error log file");
         }
         //</editor-fold>
         //--END--
 
-        //--BEGIN--
-        //setup output log
-        final String OUT_PATH = "./log/out.log";
-        //<editor-fold defaultstate="collapsed" desc="reassign output log to file">
-        try {
-            File outFile = new File(OUT_PATH);
-            outFile.createNewFile();
-            System.setOut(new PrintStream(outFile));
-        } catch (IOException ex) {
-            System.err.println("Could not create log file");
-        }
-        //</editor-fold>
-        //--END--
+//        //--BEGIN--
+//        //setup output log
+//        final String OUT_PATH = "./log/out.log";
+//        //<editor-fold defaultstate="collapsed" desc="reassign output log to file">
+//        try {
+//            File outFile = new File(OUT_PATH);
+//            outFile.createNewFile();
+//            System.setOut(new PrintStream(outFile));
+//        } catch (IOException ex) {
+//            System.err.println("Could not create output file");
+//        }
+//        //</editor-fold>
+//        //--END--
 
         //greetings message
         System.out.println("This is a system of out HT bank. Please, input first "
@@ -390,6 +408,7 @@ public class Client {
         //greetings message continue
         System.out.println("Type the command (\"h\" for help, \"q\" to quit)");
 
+        //parsing user input
         if (client != null) {
             String token;
             do {
@@ -440,9 +459,10 @@ public class Client {
                             break;
                     }
                 } catch (NumberFormatException ex) {
-                    System.out.println("Error entering amount. It is not a double");
+                    System.out.println("Error in your input. "
+                            + "It does not match criteria. " + ex.getMessage());
                     System.err.println(ex);
-                } catch (IndexOutOfBoundsException ex) {
+                } catch (NoSuchElementException ex) {
                     System.out.println("Wrong number of items in command");
                     System.err.println(ex);
                 }
