@@ -30,7 +30,7 @@ public class AccountStorage extends ArrayList<Account> {
 
         Account deletingAccount = find(accountID);
         if (deletingAccount != null) { //if we found anything, then it is the account we need to delete
-            deletingBalance = deletingAccount.deleteAccount();
+            deletingBalance = deletingAccount.getBalance();
             super.remove(deletingAccount);
         }
 
