@@ -95,8 +95,8 @@ public class Server extends Thread {
 
             case "DEPOSIT":
                 //deposit amount to account
-                System.out.print(getTime() + "\tDEPOSITING TO ACCOUNT ID#"
-                        + ID + "\t\t");
+                System.out.print(getTime() + "\tDEPOSIT TO ACCOUNT ID#"
+                        + ID + "\t");
 
                 balance = Double.parseDouble(receivedData.get(2));
                 sendingData = deposit(ID, balance);
@@ -111,8 +111,8 @@ public class Server extends Thread {
 
             case "WITHDRAW":
                 //withdraw amount from account
-                System.out.print(getTime() + "\tWITHDRAWING FROM ACCOUNT ID#"
-                        + ID + "\t\t");
+                System.out.print(getTime() + "\tWITHDRAW FROM ACCOUNT ID#"
+                        + ID + "\t");
 
                 balance = Double.parseDouble(receivedData.get(2));
                 sendingData = withdraw(ID, balance);
@@ -131,7 +131,7 @@ public class Server extends Thread {
             case "INQUIRE":
                 //inquire amount on account
                 System.out.print(getTime() + "\tINQUIRING ACCOUNT ID#"
-                        + ID + "\t\t");
+                        + ID + "\t");
 
 
                 sendingData = inquire(ID);
