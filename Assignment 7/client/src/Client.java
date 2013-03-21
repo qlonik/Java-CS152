@@ -404,7 +404,6 @@ public class Client {
         System.out.print("Type hostname or IP adress of the server (default is "
                 + DEFAULT_IP + "): ");
         ip = kb.nextLine();
-        System.out.println();
         if (ip == null || ip.equals("")) {
             System.err.println("Input string is empty. Using default address " + DEFAULT_IP);
             ip = DEFAULT_IP;
@@ -413,7 +412,6 @@ public class Client {
         try {
             System.out.print("Type port (default is " + DEFAULT_PORT + "): ");
             String portString = kb.nextLine();
-            System.out.println();
             port = Integer.parseInt(portString);
             if (port < 0 || port > 65535) {
                 System.err.println("Port is out of bound. Using default port " + DEFAULT_PORT);
