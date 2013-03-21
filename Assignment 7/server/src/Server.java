@@ -8,7 +8,9 @@
  * each client.
  */
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -324,6 +326,18 @@ public class Server extends Thread {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        //--BEGIN--
+        //setup error log
+        final String ERR_PATH = "./error.log";
+        try {
+            File errFile = new File(ERR_PATH);
+            errFile.createNewFile();
+            System.setErr(new PrintStream(errFile));
+        } catch (IOException ex) {
+            System.err.println("Could not create error log file");
+        }
+        //--END--
+
         final int DEFAULT_PORT = 56848;
 
         Scanner kb = new Scanner(System.in);
