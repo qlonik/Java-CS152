@@ -1,7 +1,14 @@
+/*
+ * Server.java
+ * Assignement 7 - Bank system. Server side.
+ * 
+ * CS152    Nikita Volodin (127196)
+ * 
+ * Server starter class. It listens for connections, and creates each new for
+ * each client.
+ */
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -9,13 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
 
-/*
- * Server.java  Nikita Volodin
- * CS152        Assigment 7
- * 
- * Server starter class. It listens for new connections, and creates each new
- * for each client
- */
 public class Server extends Thread {
 
     AccountStorage storage;
@@ -50,6 +50,7 @@ public class Server extends Thread {
     }
 
     /**
+     * Parses message from client and generates answer on it
      *
      * @param msg Message from client
      * @return Server's reaction to this input
@@ -189,6 +190,13 @@ public class Server extends Thread {
         return msg;
     }
 
+    /**
+     * Creates account
+     *
+     * @param ID new ID
+     * @param amount starting balance
+     * @return not encoded answer from server
+     */
     private ArrayList<String> createAccount(int ID, double amount) {
         ArrayList<String> result = new ArrayList<>();
 
@@ -204,6 +212,12 @@ public class Server extends Thread {
         return result;
     }
 
+    /**
+     * Deletes account
+     *
+     * @param ID ID of account to delete
+     * @return not encoded answer from server
+     */
     private ArrayList<String> deleteAccount(int ID) {
         ArrayList<String> result = new ArrayList<>();
 
@@ -219,6 +233,13 @@ public class Server extends Thread {
         return result;
     }
 
+    /**
+     * Deposits money to account
+     *
+     * @param ID ID of account
+     * @param amount adding amount
+     * @return not encoded answer from server
+     */
     private ArrayList<String> deposit(int ID, double amount) {
         ArrayList<String> result = new ArrayList<>();
 
@@ -234,6 +255,13 @@ public class Server extends Thread {
         return result;
     }
 
+    /**
+     * Withdraws money from account
+     *
+     * @param ID ID of account
+     * @param amount removing amount
+     * @return not encoded answer from server
+     */
     private ArrayList<String> withdraw(int ID, double amount) {
         ArrayList<String> result = new ArrayList<>();
 
@@ -253,6 +281,12 @@ public class Server extends Thread {
         return result;
     }
 
+    /**
+     * Inquires balance on account
+     *
+     * @param ID ID of account
+     * @return not encoded answer from server
+     */
     private ArrayList<String> inquire(int ID) {
         ArrayList<String> result = new ArrayList<>();
 
@@ -268,7 +302,7 @@ public class Server extends Thread {
         return result;
     }
 
-    /**
+    /*
      * Thread of server listener
      */
     @Override
@@ -290,57 +324,26 @@ public class Server extends Thread {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //--BEGIN--
-        //setup error log
-        final String ERR_PATH = "./log/error.log";
-        //<editor-fold defaultstate="collapsed" desc="reassign error log to output file">
-        //reassign error log output
-        try {
-            File errFile = new File(ERR_PATH);
-            errFile.createNewFile();
-            System.setErr(new PrintStream(errFile));
-        } catch (IOException ex) {
-            System.err.println("Could not create log file");
-        }
-        //</editor-fold>
-        //--END--
-
-        //--BEGIN--
-        //setup output log
-        final String OUT_PATH = "./log/out.log";
-        //<editor-fold defaultstate="collapsed" desc="reassign output log to file">
-        try {
-            File outFile = new File(OUT_PATH);
-            outFile.createNewFile();
-            System.setOut(new PrintStream(outFile));
-        } catch (IOException ex) {
-            System.err.println("Could not create log file");
-        }
-        //</editor-fold>
-        //--END--
-
         final int DEFAULT_PORT = 56848;
 
-//        Scanner kb = new Scanner(System.in);
-//        
-//        int port;
-        //<editor-fold defaultstate="expanded" desc="asking for port">
-//        try {
-//            System.out.print("Type port (default is " + DEFAULT_PORT + "): ");
-//            String portString = kb.nextLine(); //the line could be empty
-//            System.out.println();
-//            port = Integer.parseInt(portString);
-//            if (port < 0 || port > 65535) {
-//                System.err.println("Port is out of bound. Using default port " + DEFAULT_PORT);
-//                port = DEFAULT_PORT;
-//            }
-//        } catch (NumberFormatException ex) {
-//            System.err.println("Input is not an integer. Using default port " + DEFAULT_PORT);
-//            port = DEFAULT_PORT;
-//        }
-//        //</editor-fold>
+        Scanner kb = new Scanner(System.in);
 
-        int port = DEFAULT_PORT;
+        int port;
+
+        try {
+            System.out.print("Type port (default is " + DEFAULT_PORT + "): ");
+            String portString = kb.nextLine(); //the line could be empty
+            System.out.println();
+            port = Integer.parseInt(portString);
+            if (port < 0 || port > 65535) {
+                System.err.println("Port is out of bound. Using default port " + DEFAULT_PORT);
+                port = DEFAULT_PORT;
+            }
+        } catch (NumberFormatException ex) {
+            System.err.println("Input is not an integer. Using default port " + DEFAULT_PORT);
+            port = DEFAULT_PORT;
+        }
+
         Server server = new Server(port);
         server.start();
     }
