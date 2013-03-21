@@ -1,5 +1,12 @@
 
-import java.io.File;
+/*
+ * Client.java
+ * Assignement 7 - Bank system.
+ * Client side
+ * 
+ * Nikita Volodin (127196)
+ * CS152
+ */
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -268,7 +275,7 @@ public class Client {
 
         String accountID = tokenScanner.next(); //read first token
         accountID = Integer.toString(Integer.parseInt(accountID)); //check if it is int
-        
+
         String amount = tokenScanner.next(); //read second token
         Double enteredAmount = Double.parseDouble(amount);  //check if it is double
         if (enteredAmount < 0) { //check if it is positive
@@ -339,35 +346,6 @@ public class Client {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //--BEGIN--
-        //setup error log
-        final String ERR_PATH = "./log/error.log";
-        //<editor-fold defaultstate="collapsed" desc="reassign error log to output file">
-        //reassign error log output
-        try {
-            File errFile = new File(ERR_PATH);
-            errFile.createNewFile();
-            System.setErr(new PrintStream(errFile));
-        } catch (IOException ex) {
-            System.err.println("Could not create error log file");
-        }
-        //</editor-fold>
-        //--END--
-
-//        //--BEGIN--
-//        //setup output log
-//        final String OUT_PATH = "./log/out.log";
-//        //<editor-fold defaultstate="collapsed" desc="reassign output log to file">
-//        try {
-//            File outFile = new File(OUT_PATH);
-//            outFile.createNewFile();
-//            System.setOut(new PrintStream(outFile));
-//        } catch (IOException ex) {
-//            System.err.println("Could not create output file");
-//        }
-//        //</editor-fold>
-//        //--END--
-
         //greetings message
         System.out.println("This is a system of out HT bank. Please, input first "
                 + "IP and port of the server");
@@ -378,7 +356,7 @@ public class Client {
         final int DEFAULT_PORT = 56848;
         String ip;      //IP from user
         int port;       //port from user
-        //<editor-fold defaultstate="collapsed" desc="asking for IP and port">
+
         System.out.print("Type hostname or IP adress of the server (default is "
                 + DEFAULT_IP + "): ");
         ip = kb.nextLine();
@@ -401,7 +379,6 @@ public class Client {
             System.err.println("Input is not an integer. Using default port " + DEFAULT_PORT);
             port = DEFAULT_PORT;
         }
-        //</editor-fold>
 
         Client client = new Client(ip, port);
 
