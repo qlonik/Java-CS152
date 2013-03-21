@@ -1,12 +1,12 @@
-
 /*
  * Client.java
- * Assignement 7 - Bank system.
- * Client side
+ * Assignement 7 - Bank system. Client side.
  * 
- * Nikita Volodin (127196)
- * CS152
+ * CS152    Nikita Volodin (127196)
+ * 
+ * This is a client for a bank system.
  */
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -24,6 +24,12 @@ public class Client {
     private PrintStream output;
     private NumberFormat fmt;
 
+    /**
+     * Creates instance of client object which will talk to server
+     * 
+     * @param ip Server IP
+     * @param port Server port
+     */
     public Client(String ip, int port) {
         this.ip = ip;
         this.port = port;
@@ -158,6 +164,11 @@ public class Client {
         //--END-- usage
     }
 
+    /**
+     * Creates account
+     * 
+     * @param token Token from user with data we will send to server
+     */
     private void createAccount(String token) {
         token = token.substring(token.indexOf(" ") + 1); //remove command character
         Scanner tokenScanner = new Scanner(token);
@@ -197,6 +208,11 @@ public class Client {
         }
     }
 
+    /**
+     * Deletes account
+     * 
+     * @param token Token from user with data we will send to server
+     */
     private void deleteAccount(String token) {
         token = token.substring(token.indexOf(" ") + 1); //remove command character
         Scanner tokenScanner = new Scanner(token);
@@ -228,7 +244,12 @@ public class Client {
                 break;
         }
     }
-
+    
+    /**
+     * Deposits to account
+     * 
+     * @param token Token from user with data we will send to server
+     */
     private void deposit(String token) {
         token = token.substring(token.indexOf(" ") + 1); //remove command character
         Scanner tokenScanner = new Scanner(token);
@@ -268,7 +289,12 @@ public class Client {
                 break;
         }
     }
-
+    
+    /**
+     * Withdraws from account
+     * 
+     * @param token Token from user with data we will send to server
+     */
     private void withdraw(String token) {
         token = token.substring(token.indexOf(" ") + 1); //remove command character        
         Scanner tokenScanner = new Scanner(token);
@@ -310,7 +336,12 @@ public class Client {
                 break;
         }
     }
-
+    
+    /**
+     * Inquires account
+     * 
+     * @param token Token from user with data we will send to server
+     */
     private void inquire(String token) {
         token = token.substring(token.indexOf(" ") + 1); //remove command character
         Scanner tokenScanner = new Scanner(token);
