@@ -26,7 +26,7 @@ public class Client {
 
     /**
      * Creates instance of client object which will talk to server
-     * 
+     *
      * @param ip Server IP
      * @param port Server port
      */
@@ -166,7 +166,7 @@ public class Client {
 
     /**
      * Creates account
-     * 
+     *
      * @param token Token from user with data we will send to server
      */
     private void createAccount(String token) {
@@ -210,7 +210,7 @@ public class Client {
 
     /**
      * Deletes account
-     * 
+     *
      * @param token Token from user with data we will send to server
      */
     private void deleteAccount(String token) {
@@ -244,10 +244,10 @@ public class Client {
                 break;
         }
     }
-    
+
     /**
      * Deposits to account
-     * 
+     *
      * @param token Token from user with data we will send to server
      */
     private void deposit(String token) {
@@ -289,10 +289,10 @@ public class Client {
                 break;
         }
     }
-    
+
     /**
      * Withdraws from account
-     * 
+     *
      * @param token Token from user with data we will send to server
      */
     private void withdraw(String token) {
@@ -336,10 +336,10 @@ public class Client {
                 break;
         }
     }
-    
+
     /**
      * Inquires account
-     * 
+     *
      * @param token Token from user with data we will send to server
      */
     private void inquire(String token) {
