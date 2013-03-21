@@ -1,8 +1,10 @@
 /*
- * Account.java     Nikita Volodin
- * CS152            Assignment 7
+ * Account.java
+ * Assignement 7 - Bank system. Server side.
  * 
- * Class represents account in the bank
+ * CS152    Nikita Volodin (127196)
+ * 
+ * This class represents account in the bank
  */
 
 public class Account {
@@ -46,7 +48,7 @@ public class Account {
     }
 
     /**
-     * Withdraw money from account "-1" means that account has insufficient
+     * Withdraw money from account. "-1" means that account has insufficient
      * funds
      *
      * @param amount amount to withdraw

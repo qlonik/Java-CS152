@@ -1,6 +1,10 @@
 /*
- * #TODO
- * In all public methods I send Account object. It is bad solution. Have to redo.
+ * AccountStorage.java
+ * Assignement 7 - Bank system. Server side.
+ * 
+ * CS152    Nikita Volodin (127196)
+ * 
+ * This class represents storage of accounts of the system.
  */
 
 import java.util.ArrayList;
@@ -11,6 +15,14 @@ public class AccountStorage extends ArrayList<Account> {
         super();
     }
 
+    /**
+     * Creates new account in the storage
+     *
+     * @param accountID ID of new account
+     * @param amount starting balance
+     * @return Starting balance of this account, or null if we already have this
+     * account ID
+     */
     public synchronized Double create(int accountID, double amount) {
         Double newBalance = null;
 
@@ -18,13 +30,20 @@ public class AccountStorage extends ArrayList<Account> {
             Account newAccount = new Account(accountID, amount);
             super.add(newAccount);
 
-             // if we created account then we will save money it has
+            // if we created account then we will save money it has
             newBalance = newAccount.getBalance();
         }
 
         return newBalance;
     }
 
+    /**
+     * Deletes account from the storage
+     *
+     * @param accountID ID of account we want to delete
+     * @return Balance before deletion, or null if we do not have this account
+     * ID
+     */
     public synchronized Double delete(int accountID) {
         Double deletingBalance = null;
 
@@ -37,6 +56,13 @@ public class AccountStorage extends ArrayList<Account> {
         return deletingBalance;
     }
 
+    /**
+     * Deposits to account
+     *
+     * @param accountID ID of account
+     * @param amount value to add
+     * @return new amount on account, or null if we do not have this account ID
+     */
     public Double deposit(int accountID, double amount) {
         Double depositedBalance = null;
 
@@ -48,6 +74,14 @@ public class AccountStorage extends ArrayList<Account> {
         return depositedBalance;
     }
 
+    /**
+     * Withdraws from account
+     *
+     * @param accountID ID of account
+     * @param amount amount we want to withdraw
+     * @return new amount on the balance, "-1" if we do not have enough money,
+     * or null if we do not have this account ID
+     */
     public Double withdraw(int accountID, double amount) {
         Double withdrawingBalance = null;
 
@@ -59,6 +93,12 @@ public class AccountStorage extends ArrayList<Account> {
         return withdrawingBalance;
     }
 
+    /**
+     * Inquires account
+     *
+     * @param accountID ID of account
+     * @return account balance, or null if we do not have this account ID
+     */
     public Double inquire(int accountID) {
         Double inquiringBalance = null;
 
