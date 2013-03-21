@@ -7,6 +7,7 @@
  * This is a client for a bank system.
  */
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -377,6 +378,18 @@ public class Client {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        //--BEGIN--
+        //setup error log
+        final String ERR_PATH = "./error.log";
+        try {
+            File errFile = new File(ERR_PATH);
+            errFile.createNewFile();
+            System.setErr(new PrintStream(errFile));
+        } catch (IOException ex) {
+            System.err.println("Could not create error log file");
+        }
+        //--END--
+
         //greetings message
         System.out.println("This is a system of out HT bank. Please, input first "
                 + "IP and port of the server");
