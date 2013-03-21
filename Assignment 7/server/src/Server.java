@@ -347,7 +347,6 @@ public class Server extends Thread {
         try {
             System.out.print("Type port (default is " + DEFAULT_PORT + "): ");
             String portString = kb.nextLine(); //the line could be empty
-            System.out.println();
             port = Integer.parseInt(portString);
             if (port < 0 || port > 65535) {
                 System.err.println("Port is out of bound. Using default port " + DEFAULT_PORT);
