@@ -11,7 +11,7 @@ public class Driver {
     public static void main(String[] args) {
         StringTree tree = new StringTree();
 
-        File inFile = new File("input.txt");
+        File inFile = new File("as8-words.txt");
         Scanner input = null;
         try {
             input = new Scanner(inFile);
@@ -25,22 +25,23 @@ public class Driver {
                 tree.add(line);
             }
         }
-        
+
         Scanner kb = new Scanner(System.in);
         String search;
         do {
             System.out.print("Input a string to search: ");
             search = kb.nextLine();
             System.out.println();
-            
+
             int steps = tree.search(search);
-            if (steps == -1) {
+            if (steps == 0) {
                 System.out.println("Could not find this string");
             } else {
-                System.out.println("Found it with " + steps + " comparisons");
+                System.out.println("Found it with " 
+                        + ((steps == 1) ? " 1 comparison" : "" + steps + " comparisons"));
             }
         } while (!search.equals("ZZZ"));
 
-        System.out.println(tree);
+//        System.out.println(tree);
     }
 }
