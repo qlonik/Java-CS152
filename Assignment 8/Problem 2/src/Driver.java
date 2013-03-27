@@ -42,6 +42,6 @@ public class Driver {
             }
         } while (!search.equals("ZZZ"));
 
-//        System.out.println(tree);
+        System.out.println(tree);
     }
 }

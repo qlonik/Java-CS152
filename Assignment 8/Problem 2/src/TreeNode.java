@@ -36,9 +36,8 @@ public class TreeNode {
 
     @Override
     public String toString() {
-        return "L:" + ((leftChild != null) ? leftChild + " " : "")
-                + "V:" + text + " "
-                + "R:" + ((rightChild != null) ? rightChild + " " : "")
-                + "\n";
+        return ((leftChild != null) ? leftChild : "")
+                + ((text != null) ? text + "\n" : "")
+                + ((rightChild != null) ? rightChild : "");
     }
 }
