@@ -100,7 +100,8 @@ public class MagazineList {
                 node.next = current.next;
                 current.next = node;
             } else if (current.magazine.compareTo(obj) == 0) { //if we found the same value
-                System.err.println("Skipping magazine with the same title");
+                System.err.println("Skipping magazine \"" + obj + "\". This one"
+                        + " already exist.");
             }
         }
     }
@@ -131,6 +132,9 @@ public class MagazineList {
                 } else {
                     previous.next = current.next;
                 }
+            } else {
+                System.err.println("\"" + obj + "\" magazine is not found in rack."
+                        + " Could not delete it.");
             }
         }
 
