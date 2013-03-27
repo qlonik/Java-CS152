@@ -88,7 +88,7 @@ public class MagazineList {
 
             //inequations without equal allow to skip
             //repeated names
-            if (current.magazine.compareTo(obj) > 0) {
+            if (current.magazine.compareTo(obj) > 0) { //if we need to add before current
                 if (previous == null) { //if we are in the beginning of the list
                     node.next = list;
                     list = node;
@@ -96,9 +96,11 @@ public class MagazineList {
                     node.next = previous.next;
                     previous.next = node;
                 }
-            } else if (current.magazine.compareTo(obj) < 0) {
+            } else if (current.magazine.compareTo(obj) < 0) { //if we need to add after current
                 node.next = current.next;
                 current.next = node;
+            } else if (current.magazine.compareTo(obj) == 0) { //if we found the same value
+                System.err.println("Skipping magazine with the same title");
             }
         }
     }
