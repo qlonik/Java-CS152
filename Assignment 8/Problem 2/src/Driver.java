@@ -1,3 +1,10 @@
+/*
+ * Driver.java      author: Nikita Volodin (127196)
+ * CS152            Assignment 8 - Problem 2
+ * 
+ * In this problem we create binary tree, search in it, and print it in order
+ * after all
+ */
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,10 +33,12 @@ public class Driver {
             }
         }
 
+        //asking user to search in the tree
+        //until he enters "ZZZ"
         Scanner kb = new Scanner(System.in);
         String search;
         do {
-            System.out.print("Input a string to search: ");
+            System.out.print("Input a string to search (ZZZ to exit): ");
             search = kb.nextLine();
             System.out.println();
 
@@ -37,11 +46,12 @@ public class Driver {
             if (steps == 0) {
                 System.out.println("Could not find this string");
             } else {
-                System.out.println("Found it with " 
+                System.out.println("Found it with "
                         + ((steps == 1) ? " 1 comparison" : "" + steps + " comparisons"));
             }
         } while (!search.equals("ZZZ"));
 
+        //print sorted tree before exit
         System.out.println(tree);
     }
 }
